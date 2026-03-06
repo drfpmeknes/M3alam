@@ -1657,6 +1657,7 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
 <script>
 // ═══════════════════════════════════════
 //  SUPABASE — Connexion base de données
@@ -3244,6 +3245,22 @@ populateSelects();
 applyTextes();
 renderPubsInApp();
 trackVisit();
+
+// Test connexion Supabase au démarrage
+(async () => {
+  try {
+    const { data, error } = await supa.from('artisans').select('count', {count:'exact',head:true});
+    if (error) {
+      console.error('Supabase erreur:', error);
+      showToast('⚠️ Erreur connexion base de données: ' + error.message);
+    } else {
+      console.log('✅ Supabase connecté');
+    }
+  } catch(e) {
+    console.error('Supabase exception:', e);
+    showToast('⚠️ Impossible de contacter la base de données');
+  }
+})();
 if(currentUser){
   if(currentUser.role==='admin')  { showPage('admin');   initAdminPage(); }
   else if(currentUser.role==='artisan'){ showPage('artisan'); initArtisanDashboard(); }
