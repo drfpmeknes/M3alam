@@ -1659,8 +1659,114 @@ body {
 
 <script>
 // ═══════════════════════════════════════
-//  DATA
+//  SUPABASE — Connexion base de données
 // ═══════════════════════════════════════
+const SUPA_URL = "https://skpdhqsvpcwrddjdilox.supabase.co";
+const SUPA_KEY = "sb_publishable_qX4cDjzvaZUFa2r9OGSg1Q_YaE_hPPB";
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// Cache local pour performance
+const DB = { artisans:[], users:[], reviews:[] };
+
+// Charger tous les artisans depuis Supabase
+async function loadArtisans() {
+  const { data, error } = await supa.from('artisans').select('*').order('created_at', {ascending:false});
+  if (!error && data) {
+    DB.artisans = data.map(a => ({
+      ...a, skills: Array.isArray(a.skills) ? a.skills : JSON.parse(a.skills||'[]')
+    }));
+    displayedArtisans = [...DB.artisans];
+  }
+  return DB.artisans;
+}
+
+// Charger les reviews d'un artisan
+async function loadReviews(artisanId) {
+  const { data } = await supa.from('reviews').select('*').eq('artisan_id', artisanId).order('created_at', {ascending:false});
+  return data || [];
+}
+
+// Charger toutes les reviews
+async function loadAllReviews() {
+  const { data } = await supa.from('reviews').select('*');
+  if (data) DB.reviews = data;
+  return DB.reviews;
+}
+
+// Sauvegarder ou mettre à jour un artisan
+async function saveArtisan(artisan) {
+  const row = {...artisan, skills: JSON.stringify(artisan.skills||[]) };
+  const { error } = await supa.from('artisans').upsert(row, {onConflict:'id'});
+  if (error) { console.error('saveArtisan:', error); showToast('⚠️ Erreur de sauvegarde'); return false; }
+  // Mettre à jour le cache
+  const idx = DB.artisans.findIndex(a=>a.id===artisan.id);
+  if (idx>=0) DB.artisans[idx] = artisan; else DB.artisans.push(artisan);
+  return true;
+}
+
+// Sauvegarder un utilisateur
+async function saveUser(user) {
+  const { error } = await supa.from('users').upsert(user, {onConflict:'id'});
+  if (error) { console.error('saveUser:', error); return false; }
+  return true;
+}
+
+// Sauvegarder une review
+async function saveReview(review) {
+  const row = {...review, artisan_id: review.artisanId};
+  delete row.artisanId;
+  const { error } = await supa.from('reviews').insert(row);
+  if (error) { console.error('saveReview:', error); return false; }
+  return true;
+}
+
+// Supprimer un artisan
+async function deleteArtisan(id) {
+  await supa.from('photos').delete().eq('artisan_id', id);
+  await supa.from('reviews').delete().eq('artisan_id', id);
+  const { error } = await supa.from('artisans').delete().eq('id', id);
+  return !error;
+}
+
+// ── Photos ──────────────────────────────
+async function dbSavePhoto(artisanId, slotIdx, dataUrl) {
+  const id = artisanId + '_' + slotIdx;
+  const { error } = await supa.from('photos').upsert({id, artisan_id:artisanId, slot_idx:slotIdx, data_url:dataUrl}, {onConflict:'id'});
+  return !error;
+}
+
+async function dbLoadPhotos(artisanId) {
+  const { data } = await supa.from('photos').select('*').eq('artisan_id', artisanId).order('slot_idx');
+  const arr = new Array(8).fill('');
+  if (data) data.forEach(p => { if(p.slot_idx < 8) arr[p.slot_idx] = p.data_url; });
+  return arr;
+}
+
+async function dbDeletePhoto(artisanId, slotIdx) {
+  const id = artisanId + '_' + slotIdx;
+  await supa.from('photos').delete().eq('id', id);
+}
+
+async function dbSaveAvatar(artisanId, dataUrl) {
+  // Avatar stocké dans le champ avatar_url de l'artisan
+  const { error } = await supa.from('artisans').update({avatar_url: dataUrl}).eq('id', artisanId);
+  if (!error) {
+    const a = DB.artisans.find(x=>x.id===artisanId);
+    if (a) a.avatar_url = dataUrl;
+  }
+  return !error;
+}
+
+async function dbLoadAvatar(artisanId) {
+  const a = DB.artisans.find(x=>x.id===artisanId);
+  if (a && a.avatar_url) return a.avatar_url;
+  const { data } = await supa.from('artisans').select('avatar_url').eq('id', artisanId).single();
+  return data?.avatar_url || null;
+}
+
+// Compatibilité — ancienne fonction save() ne fait plus rien (tout est async)
+function save() { /* données dans Supabase désormais */ }
+
 // ═══════════════════════════════════════
 //  DONNÉES MAROC — VILLES & MÉTIERS
 // ═══════════════════════════════════════
@@ -1880,108 +1986,6 @@ let DB = {
 };
 
 // ═══════════════════════════════════════
-//  INDEXEDDB — photos & avatars persistants
-// ═══════════════════════════════════════
-let _idb = null;
-
-function openIDB() {
-  return new Promise((resolve, reject) => {
-    if (_idb) { resolve(_idb); return; }
-    const req = indexedDB.open('m3alam_media', 2);
-    req.onupgradeneeded = e => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains('photos'))
-        db.createObjectStore('photos', { keyPath: 'key' });
-      if (!db.objectStoreNames.contains('avatars'))
-        db.createObjectStore('avatars', { keyPath: 'artisanId' });
-    };
-    req.onsuccess = e => { _idb = e.target.result; resolve(_idb); };
-    req.onerror   = () => reject(req.error);
-  });
-}
-function idbPut(store, record) {
-  return openIDB().then(db => new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    tx.objectStore(store).put(record);
-    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
-  }));
-}
-function idbGet(store, key) {
-  return openIDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(store, 'readonly').objectStore(store).get(key);
-    req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
-  }));
-}
-function idbDel(store, key) {
-  return openIDB().then(db => new Promise((res, rej) => {
-    const tx = db.transaction(store, 'readwrite');
-    tx.objectStore(store).delete(key);
-    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
-  }));
-}
-function idbAll(store) {
-  return openIDB().then(db => new Promise((res, rej) => {
-    const req = db.transaction(store, 'readonly').objectStore(store).getAll();
-    req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
-  }));
-}
-// Sauvegarde une photo dans IndexedDB
-function dbSavePhoto(artisanId, slotIdx, dataUrl) {
-  return idbPut('photos', { key: artisanId+'_'+slotIdx, artisanId, slotIdx, dataUrl });
-}
-// Supprime une photo
-function dbDeletePhoto(artisanId, slotIdx) {
-  return idbDel('photos', artisanId+'_'+slotIdx);
-}
-// Charge les 8 photos d'un artisan
-function dbLoadPhotos(artisanId) {
-  return idbAll('photos').then(all => {
-    const photos = ['','','','','','','',''];
-    all.filter(p => p.artisanId === artisanId)
-       .forEach(p => { if(p.slotIdx >= 0 && p.slotIdx < 8) photos[p.slotIdx] = p.dataUrl; });
-    return photos;
-  });
-}
-// Sauvegarde avatar
-function dbSaveAvatar(artisanId, dataUrl) {
-  return idbPut('avatars', { artisanId, dataUrl });
-}
-// Charge avatar
-function dbLoadAvatar(artisanId) {
-  return idbGet('avatars', artisanId).then(rec => rec ? rec.dataUrl : null);
-}
-
-// Demo data
-if (DB.artisans.length === 0) {
-  DB.artisans = [
-    { id:'a1', name:'Hassan El Idrissi', metier:'Plombier', city:'Casablanca', exp:'5-10 ans', rate:180, bio:'Plombier certifié avec plus de 8 ans d\'expérience. Spécialisé dans la rénovation de salles de bain et le dépannage d\'urgence. Disponible 7j/7.', skills:['Dépannage urgent','Canalisations','Chauffe-eau','Salle de bain'], verified:true, available:true },
-    { id:'a2', name:'Youssef Amrani',    metier:'Électricien', city:'Rabat',       exp:'3-5 ans',  rate:150, bio:'Électricien qualifié, spécialiste de l\'installation électrique résidentielle et commerciale. Devis gratuit.', skills:['Tableau électrique','Éclairage','Domotique'], verified:true, available:true },
-    { id:'a3', name:'Karim Benali',      metier:'Maçon',       city:'Marrakech',   exp:'Plus de 10 ans', rate:200, bio:'Maçon expert avec plus de 12 ans d\'expérience dans la construction et la rénovation. Travail soigné et dans les délais.', skills:['Construction','Rénovation','Enduit','Béton armé'], verified:false, available:false },
-    { id:'a4', name:'Mehdi Saidi',       metier:'Peintre',     city:'Casablanca',  exp:'3-5 ans',  rate:120, bio:'Peintre professionnel, amoureux du détail. Je transforme vos espaces avec des couleurs et finitions parfaites.', skills:['Peinture intérieure','Décoration','Enduit décoratif'], verified:true, available:true },
-    { id:'a5', name:'Omar Fassi',        metier:'Menuisier',   city:'Fès',         exp:'5-10 ans', rate:220, bio:'Menuisier artisanal spécialisé dans la fabrication de mobilier sur mesure et la restauration de meubles anciens.', skills:['Dressing','Meubles sur mesure','Parquet'], verified:false, available:true },
-    { id:'a6', name:'Rachid Tazi',       metier:'Carreleur',   city:'Agadir',      exp:'1-3 ans',  rate:130, bio:'Carreleur précis et minutieux. Pose de carrelage, faïence et mosaïque pour cuisines, salles de bain et terrasses.', skills:['Pose carrelage','Mosaïque','Terrasse'], verified:true, available:true },
-    { id:'a7', name:'Amine Chaoui',      metier:'Climatisation', city:'Casablanca',exp:'5-10 ans', rate:170, bio:'Technicien en climatisation certifié. Installation, entretien et dépannage de tous types de climatiseurs et PAC.', skills:['Installation','Entretien','Dépannage'], verified:true, available:false },
-    { id:'a8', name:'Said Lahlou',       metier:'Jardinier',   city:'Rabat',       exp:'1-3 ans',  rate:100, bio:'Jardinier passionné, je prends soin de vos espaces verts avec expertise et respect de l\'environnement.', skills:['Taille haies','Gazon','Élagage'], verified:false, available:true },
-  ];
-  DB.reviews = [
-    { artisanId:'a1', author:'Fatima Z.', rating:5, text:'Excellent travail, rapide et propre. Je recommande vivement !', date:'2024-11-15' },
-    { artisanId:'a1', author:'Mohamed K.', rating:4, text:'Bon plombier, très professionnel. A résolu le problème rapidement.', date:'2024-10-28' },
-    { artisanId:'a2', author:'Sara B.', rating:5, text:'Parfait ! Travail impeccable, très ponctuel.', date:'2024-11-10' },
-    { artisanId:'a3', author:'Khalid M.', rating:5, text:'Travail de qualité, très satisfait de la rénovation.', date:'2024-09-05' },
-    { artisanId:'a4', author:'Nadia R.', rating:4, text:'Belle peinture, propre et soignée. Bon rapport qualité-prix.', date:'2024-11-01' },
-    { artisanId:'a5', author:'Tarik A.', rating:5, text:'Un vrai artisan, le dressing est magnifique !', date:'2024-10-15' },
-    { artisanId:'a7', author:'Lina S.', rating:4, text:'Installation rapide, climatiseur fonctionne parfaitement.', date:'2024-08-20' },
-  ];
-  save();
-}
-
-function save() {
-  localStorage.setItem('m3alam_users',    JSON.stringify(DB.users));
-  localStorage.setItem('m3alam_artisans', JSON.stringify(DB.artisans));
-  localStorage.setItem('m3alam_reviews',  JSON.stringify(DB.reviews));
-}
-
-// ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
 let currentUser = JSON.parse(sessionStorage.getItem('m3alam_session') || 'null');
@@ -2017,7 +2021,7 @@ function selectRole(role) {
   document.getElementById('role-artisan').classList.toggle('selected', role==='artisan');
 }
 
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pwd   = document.getElementById('login-pwd').value;
   if (!email || !pwd) { showToast('⚠️ Remplissez tous les champs'); return; }
@@ -2029,39 +2033,46 @@ function doLogin() {
     closeAuth(); showPage('admin'); initAdminPage(); return;
   }
 
-  // Artisans enregistrés
-  const artisan = DB.artisans.find(a => a.email === email && a.password === pwd);
-  if (artisan) { loginAsArtisan(artisan); return; }
+  showToast('⏳ Connexion...');
 
-  const user = DB.users.find(u => u.email === email && u.password === pwd);
-  if (user) { loginAsUser(user); return; }
+  // Chercher artisan dans Supabase
+  const { data: artisans } = await supa.from('artisans').select('*').eq('email', email).eq('password', pwd);
+  if (artisans && artisans.length > 0) {
+    const a = {...artisans[0], skills: Array.isArray(artisans[0].skills) ? artisans[0].skills : JSON.parse(artisans[0].skills||'[]')};
+    loginAsArtisan(a); return;
+  }
 
-  // Raccourcis démo
-  if (email === 'artisan@demo.com') { loginAsArtisan(DB.artisans[0]); return; }
-  if (email === 'user@demo.com')    { loginAsUser({name:'Demo User', email}); return; }
+  // Chercher utilisateur dans Supabase
+  const { data: users } = await supa.from('users').select('*').eq('email', email).eq('password', pwd);
+  if (users && users.length > 0) { loginAsUser(users[0]); return; }
 
   showToast('❌ Email ou mot de passe incorrect');
 }
 
-function doRegister() {
+async function doRegister() {
   const fname = document.getElementById('reg-fname').value.trim();
   const lname = document.getElementById('reg-lname').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const phone = document.getElementById('reg-phone').value.trim();
-  const city  = document.getElementById('reg-city').value;
+  const city  = acVal('reg-city');
   const pwd   = document.getElementById('reg-pwd').value;
 
   if (!fname||!lname||!email||!phone||!city||!pwd) { showToast('⚠️ Remplissez tous les champs'); return; }
   if (pwd.length < 8) { showToast('⚠️ Mot de passe trop court (8 min)'); return; }
 
+  showToast('⏳ Inscription en cours...');
+
   if (currentRole === 'artisan') {
     const artisan = { id:'a'+Date.now(), name:`${fname} ${lname}`, email, phone, city, password:pwd,
-      metier:'', exp:'', rate:0, bio:'', skills:[], verified:false, available:true };
-    DB.artisans.push(artisan); save();
+      metier:'', exp:'', rate:0, bio:'', skills:[], verified:false, available:true, avatar_url:'' };
+    const ok = await saveArtisan(artisan);
+    if (!ok) return;
+    await loadArtisans();
     loginAsArtisan(artisan);
   } else {
     const user = { id:'u'+Date.now(), name:`${fname} ${lname}`, email, phone, city, password:pwd };
-    DB.users.push(user); save();
+    const ok = await saveUser(user);
+    if (!ok) return;
     loginAsUser(user);
   }
 }
@@ -2119,7 +2130,8 @@ function initArtisanDashboard() {
   if(a.exp){document.getElementById('pf-exp').value=a.exp;}
 
   // Reviews
-  const revs = DB.reviews.filter(r=>r.artisanId===a.id);
+  const revRaw = await loadReviews(a.id);
+  const revs = revRaw.map(r=>({...r, artisanId:r.artisan_id||r.artisanId}));
   const avg  = revs.length ? (revs.reduce((s,r)=>s+r.rating,0)/revs.length).toFixed(1) : '—';
   document.getElementById('artisan-rating-stat').textContent  = avg;
   document.getElementById('artisan-reviews-count').textContent= revs.length;
@@ -2161,34 +2173,34 @@ function renderSkills(metier, selected) {
 function toggleSkill(el,s){el.classList.toggle('selected');}
 function getSelectedSkills(){return[...document.querySelectorAll('.skill-tag.selected')].map(e=>e.textContent);}
 
-function saveProfile() {
+async function saveProfile() {
   const fname  = document.getElementById('pf-fname').value.trim();
   const lname  = document.getElementById('pf-lname').value.trim();
   const phone  = document.getElementById('pf-phone').value.trim();
   const email  = document.getElementById('pf-email').value.trim();
-  const metier = document.getElementById('pf-metier').value;
+  const metier = acVal('pf-metier');
   const exp    = document.getElementById('pf-exp').value;
-  const city   = document.getElementById('pf-city').value;
+  const city   = acVal('pf-city');
   const rate   = document.getElementById('pf-rate').value;
   const bio    = document.getElementById('pf-bio').value.trim();
   const skills = getSelectedSkills();
 
   if(!fname||!lname||!metier||!city){ showToast('⚠️ Remplissez les champs obligatoires'); return; }
 
+  showToast('⏳ Sauvegarde...');
   const idx = DB.artisans.findIndex(a=>a.id===currentUser.id);
-  const updated = { ...DB.artisans[idx]||currentUser, name:`${fname} ${lname}`, phone, email, metier, exp, city, rate:+rate, bio, skills };
-  if(idx>=0) DB.artisans[idx]=updated; else DB.artisans.push(updated);
-  currentUser={...currentUser,...updated};
-  sessionStorage.setItem('m3alam_session',JSON.stringify(currentUser));
-  save();
+  const updated = { ...(DB.artisans[idx]||currentUser), name:`${fname} ${lname}`, phone, email, metier, exp, city, rate:+rate, bio, skills };
+  const ok = await saveArtisan(updated);
+  if (!ok) return;
 
-  // Mettre à jour l'affichage du profil
+  currentUser = {...currentUser, ...updated};
+  sessionStorage.setItem('m3alam_session', JSON.stringify(currentUser));
+
   document.getElementById('profile-display-name').textContent   = updated.name;
   document.getElementById('profile-display-metier').textContent = metier;
   document.getElementById('profile-display-city').textContent   = city;
   document.getElementById('artisan-name-nav').textContent = fname;
 
-  // Mettre à jour la checklist
   updateChecklist();
   showToast('✅ Profil enregistré avec succès !');
 }
@@ -2251,19 +2263,18 @@ function initPhotosGrid() {
 function handlePhotoUpload(input) {
   const slot = +input.dataset.slot;
   const file = input.files[0]; if(!file) return;
-  // Vérifier taille (max 5MB)
   if(file.size > 5 * 1024 * 1024) {
     showToast('⚠️ Image trop grande (max 5 MB)'); input.value=''; return;
   }
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     const dataUrl = e.target.result;
     artisanPhotos[slot] = dataUrl;
     initPhotosGrid();
-    // Sauvegarder dans IndexedDB
-    dbSavePhoto(currentUser.id, slot, dataUrl)
-      .then(() => { showToast('📷 Photo sauvegardée !'); updateChecklist(); })
-      .catch(() => showToast('⚠️ Erreur de sauvegarde'));
+    showToast('⏳ Sauvegarde photo...');
+    const ok = await dbSavePhoto(currentUser.id, slot, dataUrl);
+    if (ok) { showToast('📷 Photo sauvegardée !'); updateChecklist(); }
+    else showToast('⚠️ Erreur de sauvegarde');
     input.value = '';
   };
   reader.readAsDataURL(file);
@@ -2271,9 +2282,7 @@ function handlePhotoUpload(input) {
 function deletePhoto(i) {
   artisanPhotos[i] = '';
   initPhotosGrid();
-  dbDeletePhoto(currentUser.id, i)
-    .then(() => { showToast('🗑️ Photo supprimée'); updateChecklist(); })
-    .catch(() => {});
+  dbDeletePhoto(currentUser.id, i).then(() => { showToast('🗑️ Photo supprimée'); updateChecklist(); });
 }
 
 function triggerAvatarUpload(){ document.getElementById('avatar-upload').click(); }
@@ -2283,16 +2292,17 @@ function handleAvatarUpload(input){
     showToast('⚠️ Image trop grande (max 5 MB)'); input.value=''; return;
   }
   const reader=new FileReader();
-  reader.onload=e=>{
+  reader.onload= async e=>{
     const dataUrl = e.target.result;
     const av=document.getElementById('artisan-big-avatar');
     av.style.backgroundImage=`url(${dataUrl})`;
     av.style.backgroundSize='cover';
     av.style.backgroundPosition='center';
     if(av.childNodes[0]) av.childNodes[0].textContent='';
-    dbSaveAvatar(currentUser.id, dataUrl)
-      .then(()=> { showToast('✅ Photo de profil sauvegardée !'); updateChecklist(); })
-      .catch(()=> showToast('⚠️ Erreur de sauvegarde'));
+    showToast('⏳ Sauvegarde avatar...');
+    const ok = await dbSaveAvatar(currentUser.id, dataUrl);
+    if (ok) { showToast('✅ Photo de profil sauvegardée !'); updateChecklist(); }
+    else showToast('⚠️ Erreur de sauvegarde');
     input.value='';
   };
   reader.readAsDataURL(file);
@@ -2315,8 +2325,10 @@ function renderArtisanReviews(revs) {
 // ═══════════════════════════════════════
 //  USER PAGE
 // ═══════════════════════════════════════
-function initUserPage() {
+async function initUserPage() {
   document.getElementById('user-greeting').textContent = `Bonjour, ${(currentUser.name||'').split(' ')[0]} !`;
+  showToast('⏳ Chargement des artisans...');
+  await loadArtisans();
   displayedArtisans = [...DB.artisans];
   sortAndRender();
 }
@@ -2523,14 +2535,18 @@ function setReviewStar(n){
 }
 function resetStars(){ reviewStars=0; document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('active')); }
 
-function submitReview(){
+async function submitReview(){
   if(!reviewStars){ showToast('⚠️ Sélectionnez une note'); return; }
   const text=document.getElementById('review-text').value.trim();
   if(!text){ showToast('⚠️ Écrivez votre avis'); return; }
-  const review={ artisanId:currentDetailArtisan.id, author:(currentUser?.name||'Anonyme').split(' ')[0]+' '+((currentUser?.name||'A').split(' ')[1]||'').charAt(0)+'.', rating:reviewStars, text, date:new Date().toISOString().split('T')[0] };
-  DB.reviews.push(review); save();
-  const revs=DB.reviews.filter(r=>r.artisanId===currentDetailArtisan.id);
-  renderDetailReviews(revs);
+  const review={ id:'r'+Date.now(), artisanId:currentDetailArtisan.id, author:(currentUser?.name||'Anonyme').split(' ')[0]+' '+((currentUser?.name||'A').split(' ')[1]||'').charAt(0)+'.', rating:reviewStars, text, date:new Date().toISOString().split('T')[0] };
+  showToast('⏳ Publication...');
+  const ok = await saveReview(review);
+  if (!ok) return;
+  DB.reviews.push(review);
+  const revs = await loadReviews(currentDetailArtisan.id);
+  const mapped = revs.map(r=>({...r, artisanId:r.artisan_id}));
+  renderDetailReviews(mapped);
   resetStars(); document.getElementById('review-text').value='';
   showToast('✅ Avis publié avec succès !');
   sortAndRender();
@@ -2764,7 +2780,10 @@ function adminResetVisits() {
 }
 
 // ── Rendu des stats ────────────────────
-function renderAdmStats() {
+async function renderAdmStats() {
+  showToast('⏳ Chargement stats...');
+  await loadArtisans();
+  await loadAllReviews();
   const artisans = DB.artisans;
   const users    = JSON.parse(localStorage.getItem('m3alam_users') || '[]');
   const reviews  = DB.reviews || [];
@@ -3049,14 +3068,16 @@ function renderAdmArtisans() {
       </td>
     </tr>`).join('');
 }
-function admToggleVerify(i) {
+async function admToggleVerify(i) {
   DB.artisans[i].verified=!DB.artisans[i].verified;
-  save(); renderAdmArtisans();
+  await saveArtisan(DB.artisans[i]);
+  renderAdmArtisans();
   showToast(DB.artisans[i].verified?'✅ Artisan vérifié':'Vérification retirée');
 }
-function admDelArtisan(i) {
+async function admDelArtisan(i) {
   if(!confirm('Supprimer '+DB.artisans[i].name+' ?')) return;
-  DB.artisans.splice(i,1); save(); renderAdmArtisans();
+  await deleteArtisan(DB.artisans[i].id);
+  DB.artisans.splice(i,1); renderAdmArtisans();
   showToast('🗑️ Artisan supprimé');
 }
 
