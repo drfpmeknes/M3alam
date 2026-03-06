@@ -2192,7 +2192,7 @@ function showPage(name) {
 // ═══════════════════════════════════════
 //  ARTISAN DASHBOARD
 // ═══════════════════════════════════════
-function initArtisanDashboard() {
+async function initArtisanDashboard() {
   const a = DB.artisans.find(x=>x.id===currentUser.id) || currentUser;
   const initial = (a.name||'A')[0].toUpperCase();
   document.getElementById('artisan-avatar-nav').textContent = initial;
