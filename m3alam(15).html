@@ -1,0 +1,3251 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M3alam — Trouvez l'Artisan Parfait</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --clay:    #C8845A;
+  --clay2:   #E8A87C;
+  --sand:    #F5EDE0;
+  --earth:   #3D2B1F;
+  --earth2:  #6B4C3B;
+  --cream:   #FBF6EF;
+  --gold:    #D4A853;
+  --gold2:   #F0C878;
+  --teal:    #2A7B6F;
+  --teal2:   #3DAD9C;
+  --white:   #FFFFFF;
+  --shadow:  rgba(61,43,31,0.15);
+  --radius:  16px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--earth);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── PAGES ── */
+.page { display:none; min-height:100vh; }
+.page.active { display:block; }
+
+/* ══════════════════════════════════════
+   LANDING PAGE
+══════════════════════════════════════ */
+#page-landing {
+  background: var(--earth);
+  position: relative;
+  overflow: hidden;
+}
+
+#page-landing::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(200,132,90,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 80% 30%, rgba(212,168,83,0.15) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+/* Zellige pattern */
+#page-landing::after {
+  content:'';
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(45deg, rgba(200,132,90,0.04) 0, rgba(200,132,90,0.04) 1px, transparent 0, transparent 50%);
+  background-size: 30px 30px;
+  pointer-events:none;
+}
+
+.landing-nav {
+  position:relative; z-index:10;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 28px 60px;
+}
+
+.logo {
+  font-family:'Playfair Display', serif;
+  font-size:2rem; font-weight:900;
+  color: var(--clay2);
+  letter-spacing: 0.02em;
+}
+.logo span { color: var(--gold2); }
+
+.nav-btns { display:flex; gap:12px; }
+
+.btn-outline {
+  background:transparent;
+  border:1.5px solid rgba(200,132,90,0.5);
+  color: var(--clay2);
+  padding:10px 24px;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem; font-weight:500;
+  cursor:pointer;
+  transition:all 0.25s;
+}
+.btn-outline:hover { border-color:var(--clay2); background:rgba(200,132,90,0.1); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--clay), var(--clay2));
+  border:none; color:white;
+  padding:10px 28px;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem; font-weight:600;
+  cursor:pointer;
+  box-shadow: 0 4px 20px rgba(200,132,90,0.4);
+  transition:all 0.25s;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(200,132,90,0.5); }
+
+/* Hero */
+.hero {
+  position:relative; z-index:5;
+  display:flex; align-items:center;
+  min-height: calc(100vh - 100px);
+  padding: 0 60px;
+  gap: 80px;
+}
+
+.hero-text { flex:1; }
+
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(200,132,90,0.15);
+  border:1px solid rgba(200,132,90,0.3);
+  color:var(--clay2);
+  padding:6px 16px;
+  border-radius:50px;
+  font-size:0.8rem; font-weight:500;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  margin-bottom:28px;
+}
+
+.hero-title {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3rem, 5vw, 5.5rem);
+  font-weight:900;
+  line-height:1.05;
+  color:white;
+  margin-bottom:24px;
+}
+.hero-title em {
+  font-style:normal;
+  background: linear-gradient(135deg, var(--clay2), var(--gold2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-sub {
+  font-size:1.15rem; color:rgba(255,255,255,0.65);
+  line-height:1.7; max-width:480px;
+  margin-bottom:44px;
+}
+
+.hero-ctas { display:flex; gap:16px; flex-wrap:wrap; }
+
+.btn-hero-main {
+  background: linear-gradient(135deg, var(--clay), var(--clay2));
+  border:none; color:white;
+  padding:16px 40px;
+  border-radius:50px;
+  font-size:1.05rem; font-weight:600;
+  cursor:pointer;
+  box-shadow:0 8px 32px rgba(200,132,90,0.5);
+  transition:all 0.3s;
+  font-family:'DM Sans',sans-serif;
+}
+.btn-hero-main:hover { transform:translateY(-3px); box-shadow:0 14px 40px rgba(200,132,90,0.6); }
+
+.btn-hero-sec {
+  background:rgba(255,255,255,0.08);
+  border:1.5px solid rgba(255,255,255,0.2);
+  color:white;
+  padding:16px 36px;
+  border-radius:50px;
+  font-size:1.05rem; font-weight:500;
+  cursor:pointer;
+  transition:all 0.3s;
+  font-family:'DM Sans',sans-serif;
+  backdrop-filter:blur(8px);
+}
+.btn-hero-sec:hover { background:rgba(255,255,255,0.14); }
+
+.hero-stats {
+  display:flex; gap:40px; margin-top:56px;
+}
+.stat { }
+.stat-num {
+  font-family:'Playfair Display',serif;
+  font-size:2.2rem; font-weight:700;
+  color:white;
+}
+.stat-lbl { font-size:0.8rem; color:rgba(255,255,255,0.45); letter-spacing:0.08em; text-transform:uppercase; }
+
+/* Cards flottantes */
+.hero-visual {
+  flex:1; position:relative; height:560px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+.float-card {
+  position:absolute;
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--radius);
+  padding:20px;
+  animation:float 6s ease-in-out infinite;
+}
+.float-card:nth-child(2) { animation-delay:-2s; }
+.float-card:nth-child(3) { animation-delay:-4s; }
+
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-12px); }
+}
+
+.fc-main {
+  width:260px;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  animation-duration:5s;
+}
+.fc-2 { width:200px; top:10%; right:5%; }
+.fc-3 { width:190px; bottom:15%; left:0; }
+
+.fc-avatar {
+  width:52px; height:52px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; margin-bottom:12px;
+}
+.fc-name { font-weight:600; color:white; font-size:0.95rem; }
+.fc-meta { font-size:0.75rem; color:rgba(255,255,255,0.5); margin-bottom:10px; }
+.stars { color:var(--gold2); font-size:0.85rem; }
+.fc-tag {
+  display:inline-block;
+  background:rgba(200,132,90,0.25);
+  color:var(--clay2);
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:0.72rem;
+  font-weight:500;
+}
+
+/* ══════════════════════════════════════
+   AUTH MODAL
+══════════════════════════════════════ */
+.modal-overlay {
+  display:none;
+  position:fixed; inset:0;
+  background:rgba(20,12,8,0.8);
+  backdrop-filter:blur(8px);
+  z-index:1000;
+  align-items:center; justify-content:center;
+}
+.modal-overlay.open { display:flex; }
+
+.modal {
+  background:var(--white);
+  border-radius:24px;
+  width:min(480px, 95vw);
+  overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,0.3);
+  animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(30px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.modal-header {
+  background:linear-gradient(135deg, var(--earth), var(--earth2));
+  padding:32px 36px 28px;
+  position:relative;
+}
+.modal-logo {
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem; font-weight:900;
+  color:var(--clay2);
+  margin-bottom:6px;
+}
+.modal-logo span { color:var(--gold2); }
+.modal-subtitle { color:rgba(255,255,255,0.55); font-size:0.85rem; }
+.modal-close {
+  position:absolute; top:16px; right:16px;
+  background:rgba(255,255,255,0.1); border:none;
+  color:white; width:32px; height:32px; border-radius:50%;
+  cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.modal-close:hover { background:rgba(255,255,255,0.2); }
+
+/* Tabs auth */
+.auth-tabs {
+  display:flex;
+  border-bottom:1px solid #eee;
+  background:#fafafa;
+}
+.auth-tab {
+  flex:1; padding:14px;
+  background:none; border:none;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem; font-weight:500;
+  color:#aaa; cursor:pointer;
+  border-bottom:2.5px solid transparent;
+  transition:all 0.2s;
+}
+.auth-tab.active { color:var(--clay); border-bottom-color:var(--clay); background:white; font-weight:600; }
+
+.modal-body { padding:28px 36px 36px; }
+
+/* Role selector */
+.role-selector { display:flex; gap:12px; margin-bottom:24px; }
+.role-card {
+  flex:1; padding:16px 12px;
+  border:2px solid #eee;
+  border-radius:12px;
+  cursor:pointer; text-align:center;
+  transition:all 0.2s;
+  background:white;
+}
+.role-card:hover { border-color:var(--clay2); }
+.role-card.selected { border-color:var(--clay); background:rgba(200,132,90,0.06); }
+.role-card .rc-icon { font-size:1.8rem; margin-bottom:6px; }
+.role-card .rc-title { font-size:0.85rem; font-weight:600; color:var(--earth); }
+.role-card .rc-desc { font-size:0.72rem; color:#888; }
+
+/* Form fields */
+.field { margin-bottom:18px; }
+.field label {
+  display:block; font-size:0.8rem; font-weight:600;
+  color:var(--earth); margin-bottom:6px; letter-spacing:0.02em;
+}
+.field input, .field select {
+  width:100%;
+  padding:12px 16px;
+  border:1.5px solid #e8e0d8;
+  border-radius:10px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem; color:var(--earth);
+  background:white;
+  outline:none; transition:border-color 0.2s;
+}
+.field input:focus, .field select:focus { border-color:var(--clay); box-shadow:0 0 0 3px rgba(200,132,90,0.12); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.btn-auth {
+  width:100%;
+  background:linear-gradient(135deg, var(--clay), var(--clay2));
+  border:none; color:white;
+  padding:14px;
+  border-radius:12px;
+  font-family:'DM Sans',sans-serif;
+  font-size:1rem; font-weight:600;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(200,132,90,0.35);
+  transition:all 0.25s;
+  margin-top:8px;
+}
+.btn-auth:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(200,132,90,0.45); }
+
+.auth-sep { text-align:center; color:#bbb; font-size:0.8rem; margin:16px 0; position:relative; }
+.auth-sep::before, .auth-sep::after {
+  content:''; position:absolute; top:50%;
+  width:calc(50% - 30px); height:1px; background:#eee;
+}
+.auth-sep::before { left:0; } .auth-sep::after { right:0; }
+
+/* ══════════════════════════════════════
+   ARTISAN DASHBOARD
+══════════════════════════════════════ */
+#page-artisan {
+  display:none;
+  background:var(--cream);
+  min-height:100vh;
+}
+#page-artisan.active { display:flex; }
+
+.sidebar {
+  width:260px; min-height:100vh;
+  background:var(--earth);
+  padding:28px 20px;
+  display:flex; flex-direction:column;
+  position:sticky; top:0;
+  flex-shrink:0;
+}
+.sidebar-logo {
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem; font-weight:900;
+  color:var(--clay2); margin-bottom:8px;
+}
+.sidebar-logo span { color:var(--gold2); }
+.sidebar-user {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 12px;
+  background:rgba(255,255,255,0.06);
+  border-radius:12px; margin-bottom:28px;
+}
+.su-avatar {
+  width:42px; height:42px; border-radius:50%;
+  background:linear-gradient(135deg,var(--clay),var(--gold));
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; font-weight:700; color:white;
+}
+.su-name { font-size:0.85rem; font-weight:600; color:white; }
+.su-role { font-size:0.72rem; color:rgba(255,255,255,0.4); }
+
+.sidebar-nav { flex:1; }
+.nav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px;
+  border-radius:10px; margin-bottom:4px;
+  cursor:pointer; color:rgba(255,255,255,0.55);
+  font-size:0.9rem; font-weight:500;
+  transition:all 0.2s;
+  border:none; background:none; width:100%; text-align:left;
+}
+.nav-item:hover { background:rgba(255,255,255,0.08); color:white; }
+.nav-item.active { background:linear-gradient(135deg,rgba(200,132,90,0.3),rgba(200,132,90,0.1)); color:var(--clay2); }
+.nav-icon { font-size:1.1rem; width:22px; text-align:center; }
+
+.sidebar-logout {
+  margin-top:auto; padding-top:20px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+
+/* Main content */
+.main-content {
+  flex:1; padding:40px;
+  overflow-y:auto;
+}
+
+.page-header {
+  margin-bottom:32px;
+}
+.page-title {
+  font-family:'Playfair Display',serif;
+  font-size:2rem; font-weight:700;
+  color:var(--earth);
+}
+.page-subtitle { color:#888; font-size:0.9rem; margin-top:4px; }
+
+/* Sections artisan */
+.artisan-section { display:none; }
+.artisan-section.active { display:block; }
+
+/* Profile form */
+.profile-grid { display:grid; grid-template-columns:1fr 2fr; gap:28px; }
+
+.profile-avatar-section {
+  background:white; border-radius:20px; padding:28px;
+  text-align:center; box-shadow:0 2px 20px var(--shadow);
+}
+.big-avatar {
+  width:110px; height:110px; border-radius:50%; margin:0 auto 16px;
+  background:linear-gradient(135deg,var(--clay),var(--gold));
+  display:flex; align-items:center; justify-content:center;
+  font-size:2.5rem; font-weight:700; color:white; cursor:pointer;
+  position:relative; overflow:hidden;
+  box-shadow:0 8px 24px rgba(200,132,90,0.3);
+}
+.avatar-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,0.4);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity 0.2s; font-size:1.5rem;
+}
+.big-avatar:hover .avatar-overlay { opacity:1; }
+
+.profile-info-section {
+  background:white; border-radius:20px; padding:32px;
+  box-shadow:0 2px 20px var(--shadow);
+}
+
+.form-section-title {
+  font-size:0.75rem; font-weight:700; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--clay);
+  margin-bottom:18px; margin-top:28px;
+  padding-bottom:8px; border-bottom:1px solid #f0e8df;
+}
+.form-section-title:first-child { margin-top:0; }
+
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-grid .full { grid-column:1/-1; }
+
+.form-field { }
+.form-field label {
+  display:block; font-size:0.78rem; font-weight:600;
+  color:#666; margin-bottom:6px; letter-spacing:0.02em;
+}
+.form-field input, .form-field select, .form-field textarea {
+  width:100%; padding:11px 14px;
+  border:1.5px solid #ede6dc; border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:0.9rem;
+  color:var(--earth); background:var(--cream);
+  outline:none; transition:border-color 0.2s;
+  resize:none;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  border-color:var(--clay); background:white;
+  box-shadow:0 0 0 3px rgba(200,132,90,0.1);
+}
+
+.skills-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.skill-tag {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(200,132,90,0.12); color:var(--clay);
+  padding:5px 12px; border-radius:20px; font-size:0.8rem; font-weight:500;
+  cursor:pointer; transition:background 0.2s;
+}
+.skill-tag:hover { background:rgba(200,132,90,0.22); }
+.skill-tag.selected { background:var(--clay); color:white; }
+
+/* Photos upload */
+.photos-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:16px; margin-top:16px;
+}
+.photo-slot {
+  aspect-ratio:1; border-radius:14px;
+  border:2px dashed #ddd; background:#fafafa;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  cursor:pointer; transition:all 0.25s;
+  position:relative; overflow:hidden;
+}
+.photo-slot:hover { border-color:var(--clay); background:rgba(200,132,90,0.04); }
+.photo-slot img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.photo-slot .ps-icon { font-size:1.8rem; color:#ccc; margin-bottom:6px; }
+.photo-slot .ps-text { font-size:0.75rem; color:#bbb; }
+.photo-delete {
+  position:absolute; top:8px; right:8px;
+  background:rgba(255,60,60,0.85); color:white;
+  border:none; border-radius:50%; width:24px; height:24px;
+  cursor:pointer; font-size:0.8rem; display:none;
+  align-items:center; justify-content:center;
+}
+.photo-slot:hover .photo-delete { display:flex; }
+
+/* Stats cards */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:32px; }
+.stat-card {
+  background:white; border-radius:16px; padding:24px;
+  box-shadow:0 2px 16px var(--shadow);
+}
+.sc-icon { font-size:1.8rem; margin-bottom:10px; }
+.sc-val { font-size:1.8rem; font-weight:700; color:var(--earth); font-family:'Playfair Display',serif; }
+.sc-lbl { font-size:0.78rem; color:#999; margin-top:2px; }
+
+/* Reviews */
+.review-card {
+  background:white; border-radius:16px; padding:24px;
+  box-shadow:0 2px 14px var(--shadow); margin-bottom:16px;
+  display:flex; gap:18px;
+}
+.rc-avatar {
+  width:46px; height:46px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  display:flex; align-items:center; justify-content:center;
+  color:white; font-weight:700;
+}
+.rc-content { flex:1; }
+.rc-header { display:flex; justify-content:space-between; align-items:flex-start; }
+.rc-name { font-weight:600; font-size:0.95rem; }
+.rc-date { font-size:0.75rem; color:#999; }
+.rc-stars { color:var(--gold); margin:4px 0; }
+.rc-text { font-size:0.88rem; color:#666; line-height:1.6; }
+
+/* ══════════════════════════════════════
+   USER INTERFACE
+══════════════════════════════════════ */
+#page-user { display:none; background:var(--cream); min-height:100vh; }
+#page-user.active { display:block; }
+
+.user-nav {
+  background:white;
+  border-bottom:1px solid #f0e8df;
+  padding:0 60px;
+  display:flex; align-items:center; justify-content:space-between;
+  height:70px;
+  position:sticky; top:0; z-index:100;
+  box-shadow:0 2px 20px rgba(0,0,0,0.06);
+}
+.user-nav .logo { color:var(--clay); font-size:1.6rem; }
+
+.user-search-hero {
+  background: linear-gradient(135deg, var(--earth) 0%, var(--earth2) 100%);
+  padding: 60px;
+  position:relative;
+  overflow:hidden;
+}
+.user-search-hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(45deg,rgba(200,132,90,0.05) 0,rgba(200,132,90,0.05) 1px,transparent 0,transparent 50%);
+  background-size:24px 24px;
+}
+.search-hero-title {
+  font-family:'Playfair Display',serif;
+  font-size:2.6rem; font-weight:900; color:white;
+  text-align:center; margin-bottom:8px;
+  position:relative;
+}
+.search-hero-title em {
+  font-style:normal;
+  background:linear-gradient(135deg,var(--clay2),var(--gold2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.search-hero-sub { text-align:center; color:rgba(255,255,255,0.55); margin-bottom:36px; font-size:1rem; position:relative; }
+
+/* Search bar */
+.search-bar {
+  display:flex; gap:0;
+  background:white; border-radius:16px;
+  overflow:visible;
+  max-width:900px; margin:0 auto;
+  box-shadow:0 16px 48px rgba(0,0,0,0.25);
+  position:relative;
+}
+.search-bar > .search-field:first-child { border-radius:16px 0 0 16px; overflow:hidden; }
+.search-field {
+  flex:1; display:flex; align-items:center;
+  padding:0 20px; gap:10px;
+  border-right:1px solid #f0e8df;
+  min-width:0; background:white;
+}
+.search-field:last-child { border-right:none; }
+.sf-icon { font-size:1.1rem; color:var(--clay); flex-shrink:0; }
+.sf-label { font-size:0.7rem; font-weight:700; color:#bbb; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; }
+.sf-input {
+  width:100%; border:none; outline:none;
+  font-family:'DM Sans',sans-serif; font-size:0.9rem;
+  color:var(--earth); background:transparent; padding:18px 0 8px;
+}
+.sf-input::placeholder { color:#ccc; }
+
+.btn-search {
+  background:linear-gradient(135deg,var(--clay),var(--clay2));
+  border:none; color:white;
+  padding:0 36px; font-size:1rem; font-weight:600;
+  cursor:pointer; transition:all 0.25s;
+  font-family:'DM Sans',sans-serif;
+  flex-shrink:0;
+}
+.btn-search:hover { background:linear-gradient(135deg,var(--clay2),var(--gold)); }
+
+/* Filters bar */
+.filters-bar {
+  background:white; border-bottom:1px solid #f0e8df;
+  padding:16px 60px; display:flex; gap:12px; align-items:center;
+  overflow-x:auto;
+}
+.filter-label { font-size:0.8rem; color:#999; font-weight:600; white-space:nowrap; margin-right:4px; }
+.filter-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:7px 16px; border-radius:50px;
+  border:1.5px solid #eee; background:white;
+  font-size:0.82rem; font-weight:500; color:#666;
+  cursor:pointer; white-space:nowrap; transition:all 0.2s;
+  font-family:'DM Sans',sans-serif;
+}
+.filter-chip:hover { border-color:var(--clay); color:var(--clay); }
+.filter-chip.active { background:var(--clay); border-color:var(--clay); color:white; }
+
+/* Results */
+.results-section { padding:40px 60px; }
+.results-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px;
+}
+.results-count {
+  font-size:0.85rem; color:#888;
+}
+.results-count strong { color:var(--earth); font-size:1.1rem; font-weight:700; }
+
+.sort-select {
+  padding:8px 14px; border:1.5px solid #eee; border-radius:8px;
+  font-family:'DM Sans',sans-serif; font-size:0.85rem;
+  color:var(--earth); background:white; cursor:pointer; outline:none;
+}
+.sort-select:focus { border-color:var(--clay); }
+
+/* Artisan cards */
+.artisan-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+  gap:24px;
+}
+
+.artisan-card {
+  background:white; border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 2px 20px rgba(61,43,31,0.08);
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  cursor:pointer;
+}
+.artisan-card:hover {
+  transform:translateY(-6px);
+  box-shadow:0 16px 48px rgba(61,43,31,0.15);
+}
+
+.card-photos {
+  height:200px; position:relative; overflow:hidden;
+  background:linear-gradient(135deg,var(--sand),var(--clay2));
+}
+.card-photos-grid {
+  display:grid; grid-template-columns:1fr 1fr; height:100%;
+}
+.card-photo {
+  background-size:cover; background-position:center;
+  transition:transform 0.4s;
+}
+.artisan-card:hover .card-photo { transform:scale(1.05); }
+.card-photo-main { grid-row:1/-1; }
+
+.card-badge {
+  position:absolute; top:12px; left:12px;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  padding:4px 12px; border-radius:20px;
+  font-size:0.75rem; font-weight:700; color:var(--earth);
+  letter-spacing:0.04em;
+}
+.card-badge.verified { color:var(--teal); }
+
+.card-body { padding:20px; }
+.card-header { display:flex; gap:14px; align-items:flex-start; margin-bottom:14px; }
+
+.card-avatar {
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg,var(--clay),var(--gold));
+  display:flex; align-items:center; justify-content:center;
+  color:white; font-weight:700; font-size:1.1rem;
+  flex-shrink:0; box-shadow:0 4px 12px rgba(200,132,90,0.3);
+}
+.card-name { font-weight:700; font-size:1rem; color:var(--earth); }
+.card-metier { font-size:0.8rem; color:var(--clay); font-weight:600; }
+.card-loc { font-size:0.78rem; color:#999; margin-top:2px; }
+
+.card-rating {
+  display:flex; align-items:center; gap:6px;
+  margin-bottom:12px;
+}
+.rating-stars { color:var(--gold); font-size:0.9rem; }
+.rating-val { font-weight:700; color:var(--earth); font-size:0.95rem; }
+.rating-count { font-size:0.78rem; color:#aaa; }
+
+.card-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+.ctag {
+  padding:4px 10px; border-radius:20px;
+  background:var(--sand); color:var(--earth2);
+  font-size:0.75rem; font-weight:500;
+}
+
+.card-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-top:14px; border-top:1px solid #f5f0ea;
+}
+.card-price { font-weight:700; color:var(--earth); font-size:0.95rem; }
+.card-price span { font-size:0.75rem; color:#aaa; font-weight:400; }
+.btn-contact {
+  background:linear-gradient(135deg,var(--clay),var(--clay2));
+  border:none; color:white;
+  padding:8px 20px; border-radius:50px;
+  font-size:0.82rem; font-weight:600; cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+  box-shadow:0 4px 12px rgba(200,132,90,0.3);
+}
+.btn-contact:hover { transform:scale(1.04); box-shadow:0 6px 18px rgba(200,132,90,0.45); }
+
+/* ── ARTISAN DETAIL MODAL ── */
+.detail-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(20,12,8,0.8); backdrop-filter:blur(8px);
+  z-index:500; overflow-y:auto;
+  padding:40px 20px;
+}
+.detail-modal.open { display:flex; align-items:flex-start; justify-content:center; }
+
+.detail-box {
+  background:white; border-radius:24px;
+  width:min(760px,96vw);
+  overflow:hidden; box-shadow:0 32px 80px rgba(0,0,0,0.3);
+  animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.detail-hero {
+  height:260px; position:relative;
+  background:linear-gradient(135deg,var(--earth),var(--earth2));
+  display:flex; align-items:flex-end;
+  padding:0 32px 24px;
+}
+.detail-photos-bg {
+  position:absolute; inset:0;
+  display:grid; grid-template-columns:2fr 1fr;
+  opacity:0.6;
+}
+.dph { background-size:cover; background-position:center; }
+
+.detail-close {
+  position:absolute; top:16px; right:16px;
+  background:rgba(0,0,0,0.4); border:none; color:white;
+  width:36px; height:36px; border-radius:50%; cursor:pointer;
+  font-size:1.2rem; display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(8px); transition:background 0.2s;
+}
+.detail-close:hover { background:rgba(0,0,0,0.6); }
+
+.detail-identity {
+  position:relative; z-index:2;
+  display:flex; align-items:flex-end; gap:16px;
+}
+.detail-avatar {
+  width:72px; height:72px; border-radius:50%;
+  background:linear-gradient(135deg,var(--clay),var(--gold));
+  display:flex; align-items:center; justify-content:center;
+  color:white; font-weight:700; font-size:1.6rem;
+  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  flex-shrink:0;
+}
+.detail-name { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:white; }
+.detail-meta { color:rgba(255,255,255,0.7); font-size:0.85rem; margin-top:2px; }
+
+.detail-body { padding:32px; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+
+.detail-section-title {
+  font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--clay); margin-bottom:12px;
+}
+
+.detail-bio { color:#666; font-size:0.9rem; line-height:1.7; }
+
+.detail-info-list { }
+.dil-item {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 0; border-bottom:1px solid #f5f0ea;
+  font-size:0.88rem;
+}
+.dil-item:last-child { border:none; }
+.dil-icon { font-size:1rem; width:20px; text-align:center; }
+.dil-val { font-weight:600; color:var(--earth); }
+.dil-lbl { color:#aaa; font-size:0.78rem; }
+
+.detail-photos-section { margin-top:24px; }
+.detail-photos-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  margin-top:10px;
+}
+@media(max-width:480px){
+  .detail-photos-row { grid-template-columns:repeat(2,1fr); }
+}
+.dph-thumb {
+  aspect-ratio:1; border-radius:10px;
+  background-size:cover; background-position:center;
+  cursor:pointer; transition:transform 0.2s;
+  overflow:hidden;
+}
+.dph-thumb:hover { transform:scale(1.03); }
+
+/* Lightbox */
+.lightbox {
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.92); backdrop-filter:blur(6px);
+  align-items:center; justify-content:center;
+}
+.lightbox.open { display:flex; }
+.lightbox-img {
+  max-width:92vw; max-height:88vh;
+  border-radius:14px; object-fit:contain;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);
+  animation:lbIn 0.22s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes lbIn {
+  from { opacity:0; transform:scale(0.82); }
+  to   { opacity:1; transform:scale(1); }
+}
+.lightbox-close {
+  position:fixed; top:20px; right:24px;
+  background:rgba(255,255,255,0.12); border:none;
+  color:#fff; font-size:1.6rem; width:44px; height:44px;
+  border-radius:50%; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.lightbox-close:hover { background:rgba(255,255,255,0.25); }
+.lightbox-nav {
+  position:fixed; top:50%; transform:translateY(-50%);
+  background:rgba(255,255,255,0.12); border:none;
+  color:#fff; font-size:1.8rem; width:48px; height:48px;
+  border-radius:50%; cursor:pointer; display:flex;
+  align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.lightbox-nav:hover { background:rgba(255,255,255,0.28); }
+.lightbox-prev { left:16px; }
+.lightbox-next { right:16px; }
+.lightbox-counter {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+  color:rgba(255,255,255,0.7); font-size:0.9rem; font-family:'DM Sans',sans-serif;
+  background:rgba(0,0,0,0.4); padding:6px 16px; border-radius:20px;
+}
+
+/* Star rating input */
+.star-input { display:flex; gap:4px; margin:10px 0; }
+.star-btn {
+  background:none; border:none; cursor:pointer;
+  font-size:1.6rem; color:#ddd; transition:color 0.15s;
+}
+.star-btn.active, .star-btn:hover { color:var(--gold); }
+
+.btn-send-review {
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  border:none; color:white; padding:12px 28px;
+  border-radius:10px; font-family:'DM Sans',sans-serif;
+  font-size:0.9rem; font-weight:600; cursor:pointer;
+  transition:all 0.2s; margin-top:8px;
+}
+.btn-send-review:hover { opacity:0.9; transform:translateY(-1px); }
+
+/* Save btn */
+.btn-save-profile {
+  background:linear-gradient(135deg,var(--clay),var(--clay2));
+  border:none; color:white; padding:14px 40px;
+  border-radius:12px; font-family:'DM Sans',sans-serif;
+  font-size:1rem; font-weight:600; cursor:pointer;
+  box-shadow:0 4px 16px rgba(200,132,90,0.35);
+  transition:all 0.25s; margin-top:24px;
+}
+.btn-save-profile:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(200,132,90,0.45); }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:30px; right:30px;
+  background:var(--earth); color:white;
+  padding:14px 22px; border-radius:12px;
+  font-size:0.9rem; font-weight:500;
+  box-shadow:0 8px 28px rgba(0,0,0,0.2);
+  z-index:9999; opacity:0; transform:translateY(10px);
+  transition:all 0.3s; pointer-events:none;
+  display:flex; align-items:center; gap:10px;
+}
+.toast.show { opacity:1; transform:translateY(0); }
+
+/* Empty state */
+.empty-state {
+  text-align:center; padding:80px 20px; color:#bbb;
+}
+.empty-state .es-icon { font-size:3.5rem; margin-bottom:16px; }
+.empty-state .es-title { font-size:1.1rem; font-weight:600; color:#999; margin-bottom:8px; }
+.empty-state .es-sub { font-size:0.88rem; }
+
+/* Responsive */
+@media(max-width:768px){
+  .hero { flex-direction:column; padding:30px 24px; }
+  .hero-visual { display:none; }
+  .landing-nav { padding:20px 24px; }
+  .hero-stats { gap:24px; }
+  .search-bar { flex-direction:column; border-radius:16px; }
+  .search-field { border-right:none; border-bottom:1px solid #f0e8df; }
+  .filters-bar, .results-section, .user-search-hero { padding:16px 20px; }
+  .profile-grid { grid-template-columns:1fr; }
+  .stats-row { grid-template-columns:repeat(2,1fr); }
+  .artisan-grid { grid-template-columns:1fr; }
+  #page-artisan.active { flex-direction:column; }
+  .sidebar { width:100%; min-height:auto; position:static; }
+  .main-content { padding:24px; }
+  .detail-grid { grid-template-columns:1fr; }
+}
+/* ═══ STATS ═══ */
+.stats-kpi-card {
+  background:white; border-radius:16px; padding:20px 24px;
+  box-shadow:0 2px 16px rgba(61,43,31,0.07);
+  text-align:center; transition:transform 0.2s;
+}
+.stats-kpi-card:hover { transform:translateY(-3px); }
+.kpi-icon { font-size:1.8rem; margin-bottom:8px; }
+.kpi-val  { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--earth); line-height:1; }
+.kpi-lbl  { font-size:0.78rem; color:#999; text-transform:uppercase; letter-spacing:0.06em; margin:6px 0 4px; }
+.kpi-sub  { font-size:0.82rem; color:var(--clay); font-weight:600; }
+.stat-bar-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.stat-bar-label { width:140px; font-size:0.82rem; color:var(--earth); text-align:right; flex-shrink:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stat-bar-wrap  { flex:1; background:#f5f0ea; border-radius:6px; height:24px; overflow:hidden; }
+.stat-bar-fill  { height:100%; border-radius:6px; background:linear-gradient(90deg,var(--clay),var(--gold)); transition:width 0.6s cubic-bezier(.34,1.4,.64,1); display:flex; align-items:center; padding-left:8px; }
+.stat-bar-count { font-size:0.75rem; font-weight:700; color:white; white-space:nowrap; }
+.stat-bar-zero  { font-size:0.8rem; color:#ccc; padding-left:8px; }
+.visit-bar-col { display:inline-flex; flex-direction:column; align-items:center; margin-right:4px; }
+.visit-bar-inner { width:20px; background:linear-gradient(180deg,var(--clay),var(--gold)); border-radius:4px 4px 0 0; min-height:2px; }
+.visit-bar-label { font-size:0.62rem; color:#bbb; margin-top:4px; writing-mode:vertical-lr; transform:rotate(180deg); max-height:40px; }
+#page-admin { display:none; background:#f4f1ec; min-height:100vh; }
+#page-admin.active { display:block; }
+.adm-tab {
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.7); padding:7px 14px; border-radius:8px;
+  cursor:pointer; font-size:0.8rem; font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+}
+.adm-tab.active, .adm-tab:hover { background:var(--clay); color:white; border-color:var(--clay); }
+.adm-card {
+  background:white; border-radius:20px; padding:28px;
+  box-shadow:0 2px 20px rgba(61,43,31,0.08); margin-bottom:24px;
+}
+.adm-title { font-family:'Playfair Display',serif; font-size:1.3rem; color:var(--earth); margin:0 0 6px; }
+.adm-sub { font-size:0.85rem; color:#999; margin:0 0 24px; }
+.adm-lbl { display:block; font-size:0.78rem; font-weight:600; color:var(--earth); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.04em; }
+.adm-input {
+  width:100%; padding:10px 14px; border:1.5px solid #e8e0d5;
+  border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem;
+  color:var(--earth); background:#fafaf8; box-sizing:border-box;
+  outline:none; transition:border 0.2s;
+}
+.adm-input:focus { border-color:var(--clay); }
+.adm-btn-add {
+  background:var(--clay); color:white; border:none; padding:11px 20px;
+  border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem;
+  font-weight:600; cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.adm-btn-add:hover { background:var(--earth); transform:translateY(-1px); }
+.adm-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+.adm-table th { background:#f8f4ef; color:var(--earth); font-weight:700; padding:10px 14px; text-align:left; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; }
+.adm-table td { padding:10px 14px; border-bottom:1px solid #f0ebe3; color:#555; vertical-align:middle; }
+.adm-table tr:last-child td { border:none; }
+.adm-table tr:hover td { background:#fdf9f5; }
+.adm-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; }
+.adm-badge.ok { background:#e8f7f4; color:var(--teal); }
+.adm-badge.pending { background:#fff3e8; color:var(--clay); }
+.adm-btn-sm { padding:5px 10px; border-radius:6px; border:none; cursor:pointer; font-size:0.78rem; font-weight:600; }
+.adm-btn-sm.verify { background:#e8f7f4; color:var(--teal); }
+.adm-btn-sm.del { background:#ffeaea; color:#e05555; }
+.adm-pub-card { background:#f8f4ef; border-radius:14px; padding:16px 20px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.adm-section { animation: fadeIn 0.2s; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+/* ═══ AUTOCOMPLETE ═══ */
+.ac-wrap { position:relative; }
+.ac-input {
+  width:100%; padding:11px 14px; border:1.5px solid #e8ddd3;
+  border-radius:12px; font-family:'DM Sans',sans-serif; font-size:0.92rem;
+  color:var(--earth); background:white; box-sizing:border-box;
+  outline:none; transition:border 0.2s; cursor:text;
+}
+.ac-input:focus { border-color:var(--clay); box-shadow:0 0 0 3px rgba(200,132,90,0.12); }
+.ac-input.has-value { border-color:var(--teal); }
+.ac-dropdown {
+  position:fixed; z-index:99999;
+  background:white; border:1.5px solid var(--clay); border-radius:14px;
+  box-shadow:0 12px 40px rgba(61,43,31,0.18); max-height:280px;
+  overflow-y:auto; display:none; min-width:220px;
+}
+.ac-dropdown.open { display:block; animation:acIn 0.15s ease; }
+@keyframes acIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+.ac-item {
+  padding:10px 16px; cursor:pointer; font-size:0.88rem;
+  color:var(--earth); border-bottom:1px solid #f5f0ea;
+  display:flex; justify-content:space-between; align-items:center;
+  transition:background 0.1s;
+}
+.ac-item:last-child { border:none; }
+.ac-item:hover, .ac-item.active { background:#fdf6ef; color:var(--clay); }
+.ac-item .ac-ar { font-size:0.82rem; color:#aaa; font-family:serif; direction:rtl; }
+.ac-item mark { background:rgba(200,132,90,0.2); color:var(--clay); border-radius:3px; padding:0 2px; font-style:normal; }
+.ac-clear {
+  font-size:0.85rem; color:#ccc; cursor:pointer; padding:4px;
+  border-radius:50%; transition:all 0.15s; display:none; flex-shrink:0;
+  width:22px; height:22px; text-align:center; line-height:22px;
+  background:#f5f0ea;
+}
+.ac-clear:hover { background:var(--clay); color:white; }
+.ac-clear.visible { display:block; }
+/* Search bar autocomplete — style inline */
+.sf-ac-input {
+  width:100%; border:none; outline:none; background:transparent;
+  font-family:'DM Sans',sans-serif; font-size:0.95rem; color:var(--earth);
+  padding:18px 0 8px; cursor:text;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     LANDING PAGE
+══════════════════════════════════ -->
+<div class="page active" id="page-landing">
+  <nav class="landing-nav">
+    <div class="logo">M3<span>alam</span></div>
+    <div class="nav-btns">
+      <button class="btn-outline" onclick="openAuth('login')">Se connecter</button>
+      <button class="btn-primary" onclick="openAuth('register')">Inscription gratuite</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-badge">🔨 Plateforme N°1 des Artisans</div>
+      <h1 class="hero-title">
+        Trouvez l'Artisan<br><em>Parfait</em><br>près de chez vous
+      </h1>
+      <p class="hero-sub">
+        M3alam connecte les particuliers avec les meilleurs artisans qualifiés. Plombiers, électriciens, maçons, peintres… Trouvez l'expert qu'il vous faut en quelques clics.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-hero-main" onclick="openAuth('register')">🔍 Trouver un artisan</button>
+        <button class="btn-hero-sec" onclick="openAuth('register-artisan')">Je suis artisan</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">2,400+</div><div class="stat-lbl">Artisans</div></div>
+        <div class="stat"><div class="stat-num">15K+</div><div class="stat-lbl">Clients satisfaits</div></div>
+        <div class="stat"><div class="stat-num">48</div><div class="stat-lbl">Villes couvertes</div></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="float-card fc-main">
+        <div class="fc-avatar" style="background:linear-gradient(135deg,#C8845A,#D4A853)">🔧</div>
+        <div class="fc-name">Hassan El Idrissi</div>
+        <div class="fc-meta">Plombier · Casablanca</div>
+        <div class="stars">★★★★★</div>
+        <div style="margin-top:8px"><span class="fc-tag">Disponible</span></div>
+      </div>
+      <div class="float-card fc-2">
+        <div class="fc-avatar" style="background:linear-gradient(135deg,#2A7B6F,#3DAD9C)">⚡</div>
+        <div class="fc-name">Youssef Amrani</div>
+        <div class="fc-meta">Électricien · Rabat</div>
+        <div class="stars">★★★★☆</div>
+      </div>
+      <div class="float-card fc-3">
+        <div class="fc-avatar" style="background:linear-gradient(135deg,#8B4513,#C8845A)">🏠</div>
+        <div class="fc-name">Karim Benali</div>
+        <div class="fc-meta">Maçon · Marrakech</div>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════
+     AUTH MODAL
+══════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-logo">M3<span>alam</span></div>
+      <div class="modal-subtitle">Plateforme des artisans qualifiés</div>
+      <button class="modal-close" onclick="closeAuth()">✕</button>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login',this)">Se connecter</button>
+      <button class="auth-tab" onclick="switchAuthTab('register',this)">S'inscrire</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="modal-body" id="tab-login">
+      <div class="field">
+        <label>Adresse email</label>
+        <input type="email" id="login-email" placeholder="votre@email.com">
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="login-pwd" placeholder="••••••••">
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Se connecter</button>
+      <div class="auth-sep">ou</div>
+      <p style="text-align:center;font-size:0.82rem;color:#aaa">
+        Pas encore de compte ?
+        <a href="#" onclick="switchAuthTab('register',document.querySelectorAll('.auth-tab')[1])" style="color:var(--clay);font-weight:600">S'inscrire gratuitement</a>
+      </p>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="modal-body" id="tab-register" style="display:none">
+      <p style="font-size:0.82rem;color:#888;margin-bottom:16px">Vous êtes :</p>
+      <div class="role-selector">
+        <div class="role-card selected" id="role-user" onclick="selectRole('user')">
+          <div class="rc-icon">🔍</div>
+          <div class="rc-title">Particulier</div>
+          <div class="rc-desc">Je cherche un artisan</div>
+        </div>
+        <div class="role-card" id="role-artisan" onclick="selectRole('artisan')">
+          <div class="rc-icon">🔨</div>
+          <div class="rc-title">Artisan</div>
+          <div class="rc-desc">Je propose mes services</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Prénom</label><input type="text" id="reg-fname" placeholder="Prénom"></div>
+        <div class="field"><label>Nom</label><input type="text" id="reg-lname" placeholder="Nom"></div>
+      </div>
+      <div class="field"><label>Adresse email</label><input type="email" id="reg-email" placeholder="votre@email.com"></div>
+      <div class="field"><label>Téléphone</label><input type="tel" id="reg-phone" placeholder="+212 6XX XXX XXX"></div>
+      <div class="field"><label>Ville</label>
+        <div class="ac-wrap">
+          <input class="ac-input" id="reg-city-input" placeholder="Tapez votre ville..." autocomplete="off" oninput="acFilter('reg-city')" onfocus="acOpen('reg-city')" onblur="acBlur('reg-city')">
+          <input type="hidden" id="reg-city">
+        </div>
+      </div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="reg-pwd" placeholder="Minimum 8 caractères"></div>
+      <button class="btn-auth" onclick="doRegister()">Créer mon compte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ARTISAN DASHBOARD
+══════════════════════════════════ -->
+<div class="page" id="page-artisan">
+  <aside class="sidebar">
+    <div class="sidebar-logo">M3<span>alam</span></div>
+    <div class="sidebar-user">
+      <div class="su-avatar" id="artisan-avatar-nav">H</div>
+      <div>
+        <div class="su-name" id="artisan-name-nav">Hassan</div>
+        <div class="su-role">Artisan professionnel</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="showArtisanSection('stats',this)"><span class="nav-icon">📊</span>Tableau de bord</button>
+      <button class="nav-item" onclick="showArtisanSection('profile',this)"><span class="nav-icon">👤</span>Mon profil</button>
+      <button class="nav-item" onclick="showArtisanSection('photos',this)"><span class="nav-icon">📷</span>Mes photos</button>
+      <button class="nav-item" onclick="showArtisanSection('reviews',this)"><span class="nav-icon">⭐</span>Avis clients</button>
+    </nav>
+    <div class="sidebar-logout">
+      <button class="nav-item" onclick="logout()" style="color:rgba(255,100,100,0.7)"><span class="nav-icon">🚪</span>Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <!-- STATS -->
+    <div class="artisan-section active" id="section-stats">
+      <div class="page-header">
+        <div class="page-title">Tableau de bord</div>
+        <div class="page-subtitle">Bienvenue ! Voici un aperçu de votre activité.</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="sc-icon">👁️</div><div class="sc-val">248</div><div class="sc-lbl">Vues du profil</div></div>
+        <div class="stat-card"><div class="sc-icon">📞</div><div class="sc-val">32</div><div class="sc-lbl">Contacts reçus</div></div>
+        <div class="stat-card"><div class="sc-icon">⭐</div><div class="sc-val" id="artisan-rating-stat">4.8</div><div class="sc-lbl">Note moyenne</div></div>
+        <div class="stat-card"><div class="sc-icon">💬</div><div class="sc-val" id="artisan-reviews-count">12</div><div class="sc-lbl">Avis reçus</div></div>
+      </div>
+      <div style="background:white;border-radius:20px;padding:28px;box-shadow:0 2px 20px var(--shadow)">
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--earth);margin-bottom:16px">✅ Complétez votre profil</div>
+        <div style="font-size:0.85rem;color:#999;margin-bottom:20px">Un profil complet attire 3x plus de clients</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;font-size:0.9rem" id="check-avatar">
+            <span style="font-size:1.1rem" id="check-avatar-icon">○</span><span id="check-avatar-label" style="color:#bbb">Photo de profil</span></div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:0.9rem" id="check-info">
+            <span style="font-size:1.1rem" id="check-info-icon">○</span><span id="check-info-label" style="color:#bbb">Informations de base (nom, métier, ville)</span></div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:0.9rem" id="check-bio">
+            <span style="font-size:1.1rem" id="check-bio-icon">○</span><span id="check-bio-label" style="color:#bbb">Description détaillée</span></div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:0.9rem" id="check-photos">
+            <span style="font-size:1.1rem" id="check-photos-icon">○</span><span id="check-photos-label" style="color:#bbb">Photos de réalisations (0/8)</span></div>
+        </div>
+        <button class="btn-save-profile" style="margin-top:16px;padding:10px 24px;font-size:0.85rem" onclick="showArtisanSection('profile',null)">Compléter mon profil →</button>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="artisan-section" id="section-profile">
+      <div class="page-header">
+        <div class="page-title">Mon profil</div>
+        <div class="page-subtitle">Ces informations seront visibles par les clients</div>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-avatar-section">
+          <div class="big-avatar" id="artisan-big-avatar" onclick="triggerAvatarUpload()">
+            H
+            <div class="avatar-overlay">📷</div>
+          </div>
+          <input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+          <div style="font-weight:700;font-size:1rem;color:var(--earth);margin-bottom:4px" id="profile-display-name">Hassan El Idrissi</div>
+          <div style="font-size:0.82rem;color:var(--clay);font-weight:600" id="profile-display-metier">Plombier</div>
+          <div style="font-size:0.8rem;color:#999;margin-top:4px" id="profile-display-city">Casablanca</div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid #f0e8df">
+            <div style="font-size:0.72rem;color:#bbb;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Note</div>
+            <div style="font-size:1.6rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--gold)">4.8 ★</div>
+          </div>
+        </div>
+
+        <div class="profile-info-section">
+          <div class="form-section-title">Informations personnelles</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Prénom</label><input type="text" id="pf-fname" placeholder="Prénom"></div>
+            <div class="form-field"><label>Nom</label><input type="text" id="pf-lname" placeholder="Nom"></div>
+            <div class="form-field"><label>Téléphone</label><input type="tel" id="pf-phone" placeholder="+212 6XX XXX XXX"></div>
+            <div class="form-field"><label>Email</label><input type="email" id="pf-email" placeholder="email@exemple.com"></div>
+          </div>
+
+          <div class="form-section-title">Activité professionnelle</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Métier principal</label>
+              <div class="ac-wrap">
+                <input class="ac-input" id="pf-metier-input" placeholder="Tapez votre métier..." autocomplete="off" oninput="acFilter('pf-metier')" onfocus="acOpen('pf-metier')" onblur="acBlur('pf-metier')">
+                <input type="hidden" id="pf-metier">
+              </div>
+            </div>
+            <div class="form-field"><label>Années d'expérience</label>
+              <select id="pf-exp">
+                <option>Moins d'1 an</option><option>1-3 ans</option><option>3-5 ans</option>
+                <option>5-10 ans</option><option>Plus de 10 ans</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Ville</label>
+              <div class="ac-wrap">
+                <input class="ac-input" id="pf-city-input" placeholder="Tapez votre ville..." autocomplete="off" oninput="acFilter('pf-city')" onfocus="acOpen('pf-city')" onblur="acBlur('pf-city')">
+                <input type="hidden" id="pf-city">
+              </div>
+            </div>
+            <div class="form-field"><label>Tarif horaire (DH)</label>
+              <input type="number" id="pf-rate" placeholder="ex: 150">
+            </div>
+            <div class="form-field full"><label>Description / Bio</label>
+              <textarea id="pf-bio" rows="4" placeholder="Décrivez votre expérience, vos spécialités, vos certifications..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-section-title">Compétences</div>
+          <div class="skills-tags" id="skills-container"></div>
+
+          <button class="btn-save-profile" onclick="saveProfile()">💾 Enregistrer mon profil</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="artisan-section" id="section-photos">
+      <div class="page-header">
+        <div class="page-title">Mes réalisations</div>
+        <div class="page-subtitle">Ajoutez des photos de vos travaux pour attirer plus de clients (max 8 photos)</div>
+      </div>
+      <div style="background:white;border-radius:20px;padding:32px;box-shadow:0 2px 20px var(--shadow)">
+        <div class="photos-grid" id="photos-grid">
+          <!-- Generated by JS -->
+        </div>
+        <input type="file" id="photo-upload" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(this)">
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="artisan-section" id="section-reviews">
+      <div class="page-header">
+        <div class="page-title">Avis clients</div>
+        <div class="page-subtitle">Ce que vos clients pensent de vous</div>
+      </div>
+      <div id="artisan-reviews-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════
+     USER INTERFACE
+══════════════════════════════════ -->
+<div class="page" id="page-user">
+  <nav class="user-nav">
+    <div class="logo" style="color:var(--clay)">M3<span style="color:var(--gold)">alam</span></div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span style="font-size:0.85rem;color:#999" id="user-greeting">Bonjour !</span>
+      <button class="btn-primary" style="padding:8px 20px;font-size:0.85rem" onclick="logout()">Déconnexion</button>
+    </div>
+  </nav>
+
+  <div class="user-search-hero">
+    <h1 class="search-hero-title">Trouvez votre <em>M3alam</em></h1>
+    <p class="search-hero-sub">L'artisan qualifié dont vous avez besoin, près de chez vous</p>
+    <div class="search-bar">
+      <div class="search-field">
+        <span class="sf-icon">🔨</span>
+        <div style="flex:1;position:relative">
+          <div class="sf-label">Métier</div>
+          <input class="sf-ac-input" id="search-metier-input" placeholder="ex: Plombier, Électricien..." autocomplete="off" oninput="acFilter('search-metier')" onfocus="acOpen('search-metier')" onblur="acBlur('search-metier')">
+          <input type="hidden" id="search-metier">
+        </div>
+        <span class="ac-clear" id="search-metier-clear" onclick="acClear('search-metier')" title="Effacer">✕</span>
+      </div>
+      <div class="search-field">
+        <span class="sf-icon">📍</span>
+        <div style="flex:1;position:relative">
+          <div class="sf-label">Ville</div>
+          <input class="sf-ac-input" id="search-city-input" placeholder="ex: Casablanca, Rabat..." autocomplete="off" oninput="acFilter('search-city')" onfocus="acOpen('search-city')" onblur="acBlur('search-city')">
+          <input type="hidden" id="search-city">
+        </div>
+        <span class="ac-clear" id="search-city-clear" onclick="acClear('search-city')" title="Effacer">✕</span>
+      </div>
+      <button class="btn-search" onclick="searchArtisans()">🔍 Rechercher</button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <span class="filter-label">Filtrer :</span>
+    <button class="filter-chip active" onclick="setFilter('all',this)">Tous</button>
+    <button class="filter-chip" onclick="setFilter('top',this)">⭐ Mieux notés</button>
+    <button class="filter-chip" onclick="setFilter('available',this)">✅ Disponibles</button>
+    <button class="filter-chip" onclick="setFilter('cheap',this)">💰 Moins chers</button>
+    <button class="filter-chip" onclick="setFilter('verified',this)">🏅 Vérifiés</button>
+    <button class="filter-chip" onclick="setFilter('exp',this)">🎖️ Expérimentés</button>
+  </div>
+
+  <div class="results-section">
+    <div class="results-header">
+      <div class="results-count"><strong id="results-num">0</strong> artisans trouvés</div>
+      <select class="sort-select" id="sort-select" onchange="sortAndRender()">
+        <option value="rating">Mieux notés</option>
+        <option value="price-asc">Prix croissant</option>
+        <option value="price-desc">Prix décroissant</option>
+        <option value="exp">Plus expérimentés</option>
+      </select>
+    </div>
+    <div class="artisan-grid" id="artisan-grid"></div>
+  </div>
+</div>
+
+<!-- ARTISAN DETAIL MODAL -->
+<div class="detail-modal" id="detail-modal">
+  <div class="detail-box">
+    <div class="detail-hero">
+      <div class="detail-photos-bg" id="detail-photos-bg"></div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+      <div class="detail-identity">
+        <div class="detail-avatar" id="detail-avatar">H</div>
+        <div>
+          <div class="detail-name" id="detail-name">Hassan El Idrissi</div>
+          <div class="detail-meta" id="detail-meta">Plombier · Casablanca · ★ 4.8 (24 avis)</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section-title">À propos</div>
+          <div class="detail-bio" id="detail-bio"></div>
+          <div style="margin-top:20px">
+            <div class="detail-section-title">Spécialités</div>
+            <div class="card-tags" id="detail-tags"></div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-section-title">Informations</div>
+          <div class="detail-info-list" id="detail-info-list"></div>
+        </div>
+      </div>
+
+      <div class="detail-photos-section">
+        <div class="detail-section-title">Réalisations</div>
+        <div class="detail-photos-row" id="detail-photos-row"></div>
+      </div>
+
+      <div style="margin-top:28px;padding-top:24px;border-top:1px solid #f5f0ea">
+        <div class="detail-section-title">Laisser un avis</div>
+        <div class="star-input" id="star-input">
+          <button class="star-btn" onclick="setReviewStar(1)">★</button>
+          <button class="star-btn" onclick="setReviewStar(2)">★</button>
+          <button class="star-btn" onclick="setReviewStar(3)">★</button>
+          <button class="star-btn" onclick="setReviewStar(4)">★</button>
+          <button class="star-btn" onclick="setReviewStar(5)">★</button>
+        </div>
+        <textarea id="review-text" rows="3" style="width:100%;padding:12px;border:1.5px solid #ede6dc;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;resize:none;outline:none;color:var(--earth)" placeholder="Partagez votre expérience avec cet artisan..."></textarea>
+        <button class="btn-send-review" onclick="submitReview()">Envoyer mon avis</button>
+      </div>
+
+      <div style="margin-top:24px">
+        <div class="detail-section-title">Avis clients</div>
+        <div id="detail-reviews-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ADMIN PAGE
+════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <nav style="background:var(--earth);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+    <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);font-weight:700">
+      M3<span style="color:white">alam</span> <span style="font-size:0.7rem;background:var(--clay);color:white;padding:2px 8px;border-radius:10px;font-family:'DM Sans',sans-serif;vertical-align:middle">ADMIN</span>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center">
+      <button onclick="adminTab('stats')" class="adm-tab" id="atab-stats">📊 Statistiques</button>
+      <button onclick="adminTab('villes')" class="adm-tab active" id="atab-villes">🏙️ Villes</button>
+      <button onclick="adminTab('metiers')" class="adm-tab" id="atab-metiers">🔧 Métiers</button>
+      <button onclick="adminTab('pubs')" class="adm-tab" id="atab-pubs">📢 Publicités</button>
+      <button onclick="adminTab('textes')" class="adm-tab" id="atab-textes">✏️ Textes</button>
+      <button onclick="adminTab('artisans')" class="adm-tab" id="atab-artisans">👷 Artisans</button>
+      <button onclick="logout()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:0.82rem">Déconnexion</button>
+    </div>
+  </nav>
+
+  <div style="max-width:1100px;margin:0 auto;padding:32px 24px">
+
+    <!-- STATISTIQUES -->
+    <div class="adm-section" id="admsec-stats" style="display:none">
+
+      <!-- KPI Cards -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px" id="stats-kpi-row">
+        <div class="stats-kpi-card" id="kpi-visitors">
+          <div class="kpi-icon">👥</div>
+          <div class="kpi-val" id="kpi-visitors-val">0</div>
+          <div class="kpi-lbl">Visiteurs uniques</div>
+          <div class="kpi-sub" id="kpi-visitors-today">0 aujourd'hui</div>
+        </div>
+        <div class="stats-kpi-card">
+          <div class="kpi-icon">👷</div>
+          <div class="kpi-val" id="kpi-artisans-val">0</div>
+          <div class="kpi-lbl">Artisans inscrits</div>
+          <div class="kpi-sub" id="kpi-artisans-verified">0 vérifiés</div>
+        </div>
+        <div class="stats-kpi-card">
+          <div class="kpi-icon">👤</div>
+          <div class="kpi-val" id="kpi-users-val">0</div>
+          <div class="kpi-lbl">Clients inscrits</div>
+          <div class="kpi-sub" id="kpi-reviews-count">0 avis</div>
+        </div>
+        <div class="stats-kpi-card">
+          <div class="kpi-icon">⭐</div>
+          <div class="kpi-val" id="kpi-rating-val">—</div>
+          <div class="kpi-lbl">Note moyenne</div>
+          <div class="kpi-sub" id="kpi-rating-sub">sur 5</div>
+        </div>
+      </div>
+
+      <!-- Artisans par ville -->
+      <div class="adm-card" style="margin-bottom:20px">
+        <h2 class="adm-title">🏙️ Artisans par ville</h2>
+        <p class="adm-sub">Répartition géographique des artisans inscrits</p>
+        <div id="chart-villes"></div>
+      </div>
+
+      <!-- Artisans par métier -->
+      <div class="adm-card" style="margin-bottom:20px">
+        <h2 class="adm-title">🔧 Artisans par métier</h2>
+        <p class="adm-sub">Top 15 des métiers les plus représentés</p>
+        <div id="chart-metiers"></div>
+      </div>
+
+      <!-- Historique visites -->
+      <div class="adm-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <h2 class="adm-title" style="margin:0">📈 Historique des visites (30 derniers jours)</h2>
+          <button class="adm-btn-sm del" onclick="adminResetVisits()" style="font-size:0.75rem">🗑️ Réinitialiser</button>
+        </div>
+        <p class="adm-sub">Visites enregistrées par jour</p>
+        <div id="chart-visits" style="overflow-x:auto"></div>
+      </div>
+    </div>
+
+    <!-- VILLES -->
+    <div class="adm-section" id="admsec-villes">
+      <div class="adm-card">
+        <h2 class="adm-title">🏙️ Gestion des villes</h2>
+        <p class="adm-sub">Les villes apparaissent dans les formulaires d'inscription et de recherche (avec traduction arabe)</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+          <div><label class="adm-lbl">Ville (Français)</label><input class="adm-input" id="adm-ville-fr" placeholder="ex: Casablanca"></div>
+          <div><label class="adm-lbl">Ville (Arabe) <span style="font-family:serif">اسم المدينة</span></label><input class="adm-input" id="adm-ville-ar" placeholder="ex: الدار البيضاء" dir="rtl"></div>
+          <div style="display:flex;align-items:flex-end"><button class="adm-btn-add" onclick="adminAddVille()">+ Ajouter la ville</button></div>
+        </div>
+        <div style="max-height:400px;overflow-y:auto">
+          <table class="adm-table" id="adm-villes-table">
+            <thead><tr><th>#</th><th>Français</th><th>العربية</th><th>Actions</th></tr></thead>
+            <tbody id="adm-villes-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÉTIERS -->
+    <div class="adm-section" id="admsec-metiers" style="display:none">
+      <div class="adm-card">
+        <h2 class="adm-title">🔧 Gestion des métiers</h2>
+        <p class="adm-sub">Ajoutez des métiers avec leur catégorie et traduction arabe</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:8px">
+          <div><label class="adm-lbl">Métier (Français)</label><input class="adm-input" id="adm-metier-fr" placeholder="ex: Électricien"></div>
+          <div><label class="adm-lbl">Métier (Arabe)</label><input class="adm-input" id="adm-metier-ar" placeholder="ex: كهربائي" dir="rtl"></div>
+          <div><label class="adm-lbl">Catégorie</label>
+            <select class="adm-input" id="adm-metier-cat">
+              <option value="">-- Sélectionner --</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:20px">
+          <label class="adm-lbl">Compétences (séparées par virgule)</label>
+          <input class="adm-input" id="adm-metier-skills" placeholder="ex: Installation, Dépannage, Entretien">
+          <button class="adm-btn-add" onclick="adminAddMetier()" style="margin-top:8px;width:100%">+ Ajouter le métier</button>
+        </div>
+        <div style="max-height:420px;overflow-y:auto">
+          <table class="adm-table">
+            <thead><tr><th>Catégorie</th><th>Français</th><th>العربية</th><th>Compétences</th><th>Actions</th></tr></thead>
+            <tbody id="adm-metiers-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUBLICITÉS -->
+    <div class="adm-section" id="admsec-pubs" style="display:none">
+      <div class="adm-card">
+        <h2 class="adm-title">📢 Emplacements publicitaires</h2>
+        <p class="adm-sub">Gérez les bannières et publicités affichées dans l'application</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
+          <div>
+            <label class="adm-lbl">Emplacement</label>
+            <select class="adm-input" id="adm-pub-slot">
+              <option value="banner_top">Bannière haut (page recherche)</option>
+              <option value="banner_mid">Bannière milieu (entre les résultats)</option>
+              <option value="banner_sidebar">Panneau latéral</option>
+              <option value="banner_artisan">Bannière page artisan</option>
+            </select>
+          </div>
+          <div>
+            <label class="adm-lbl">Type</label>
+            <select class="adm-input" id="adm-pub-type">
+              <option value="image">Image (URL)</option>
+              <option value="text">Texte publicitaire</option>
+              <option value="html">HTML personnalisé</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div><label class="adm-lbl">Titre / Accroche</label><input class="adm-input" id="adm-pub-title" placeholder="ex: Promotions Ramadan"></div>
+          <div><label class="adm-lbl">URL de destination (clic)</label><input class="adm-input" id="adm-pub-url" placeholder="https://..."></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="adm-lbl">Contenu (URL image ou texte)</label>
+          <textarea class="adm-input" id="adm-pub-content" rows="3" placeholder="URL de l'image ou texte HTML"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+          <div><label class="adm-lbl">Couleur fond</label><input type="color" class="adm-input" id="adm-pub-bg" value="#C8845A" style="height:42px;cursor:pointer"></div>
+          <div><label class="adm-lbl">Couleur texte</label><input type="color" class="adm-input" id="adm-pub-color" value="#FFFFFF" style="height:42px;cursor:pointer"></div>
+          <div style="display:flex;align-items:flex-end"><button class="adm-btn-add" onclick="adminAddPub()" style="width:100%">+ Publier</button></div>
+        </div>
+
+        <div id="adm-pubs-list"></div>
+      </div>
+    </div>
+
+    <!-- TEXTES -->
+    <div class="adm-section" id="admsec-textes" style="display:none">
+      <div class="adm-card">
+        <h2 class="adm-title">✏️ Textes & Contenus modifiables</h2>
+        <p class="adm-sub">Personnalisez les textes affichés dans l'application (titre, slogan, messages…)</p>
+        <div id="adm-textes-form" style="display:flex;flex-direction:column;gap:16px"></div>
+        <button class="adm-btn-add" onclick="adminSaveTextes()" style="margin-top:20px;width:100%">💾 Enregistrer tous les textes</button>
+      </div>
+    </div>
+
+    <!-- ARTISANS -->
+    <div class="adm-section" id="admsec-artisans" style="display:none">
+      <div class="adm-card">
+        <h2 class="adm-title">👷 Gestion des artisans</h2>
+        <p class="adm-sub">Vérifiez, activez ou supprimez des comptes artisans</p>
+        <table class="adm-table">
+          <thead><tr><th>Nom</th><th>Métier</th><th>Ville</th><th>Email</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody id="adm-artisans-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+// ═══════════════════════════════════════
+//  DONNÉES MAROC — VILLES & MÉTIERS
+// ═══════════════════════════════════════
+const VILLES_MAROC = [
+  // Grand Casablanca-Settat
+  'Casablanca','Mohammedia','El Jadida','Settat','Berrechid','Ben Slimane',
+  'Benslimane','Bouskoura','Nouaceur','Médiouna','Aïn Harrouda',
+  // Rabat-Salé-Kénitra
+  'Rabat','Salé','Kénitra','Témara','Skhirate','Khémisset',
+  'Sidi Kacem','Sidi Slimane',
+  // Marrakech-Safi
+  'Marrakech','Safi','Essaouira','Kelaa des Sraghna','Chichaoua',
+  'Youssoufia','Ben Guerir',
+  // Fès-Meknès
+  'Fès','Meknès','Ifrane','Azrou','Khénifra','Midelt',
+  'Errachidia','Taounate','Taza',
+  // Tanger-Tétouan-Al Hoceïma
+  'Tanger','Tétouan','Al Hoceïma','Larache','Asilah','Chefchaouen',
+  'Martil','Fnideq','Mdiq','Ouazzane',
+  // Souss-Massa
+  'Agadir','Tiznit','Taroudant','Inezgane','Ait Melloul','Chtouka Aït Baha',
+  'Biougra','Massa','Ouled Teima',
+  // Oriental
+  'Oujda','Nador','Berkane','Taourirt','Jerada','Guercif',
+  'Saïdia','Bouarfa',
+  // Béni Mellal-Khénifra
+  'Béni Mellal','Khouribga','Fquih Ben Salah','Azilal','Kasba Tadla',
+  // Drâa-Tafilalet
+  'Ouarzazate','Zagora','Tinghir','Rissani','Erfoud',
+  // Laâyoune-Sakia El Hamra
+  'Laâyoune','Boujdour','Tarfaya','Es Semara',
+  // Dakhla-Oued Ed-Dahab
+  'Dakhla','Aousserd',
+  // Guelmim-Oued Noun
+  'Guelmim','Tan-Tan','Sidi Ifni','Assa',
+  // Autres villes importantes
+  'Beni Mellal','Tetouan','Al Jadida','Kenitra','Temara',
+].sort();
+
+const METIERS_MAP = {
+  '🔧 Bâtiment & Travaux': [
+    'Maçon','Carreleur','Plâtrier','Coffreur','Ferrailleur',
+    'Terrassier','Étanchéiste','Façadier','Démolisseur',
+  ],
+  '💡 Électricité & Énergie': [
+    'Électricien','Électricien industriel','Technicien solaire / Photovoltaïque',
+    'Technicien groupe électrogène','Domoticien',
+  ],
+  '🚿 Plomberie & Sanitaire': [
+    'Plombier','Chauffagiste','Installateur sanitaire','Technicien chauffe-eau solaire',
+    'Plombier-chauffagiste',
+  ],
+  '🏠 Finitions & Décoration': [
+    'Peintre','Menuisier bois','Menuisier aluminium','Menuisier PVC',
+    'Carreleur','Parqueteur','Plaquiste','Staffeur / Gypserie',
+    'Mosaïste / Zellige','Decorateur d\'intérieur','Tapissier',
+  ],
+  '❄️ Climatisation & Froid': [
+    'Technicien climatisation','Frigoriste','Technicien VMC',
+    'Technicien pompe à chaleur',
+  ],
+  '🔐 Sécurité & Serrurerie': [
+    'Serrurier','Installateur alarme','Technicien vidéosurveillance',
+    'Installateur portail automatique','Vitrier',
+  ],
+  '🌿 Espaces verts & Extérieurs': [
+    'Jardinier','Paysagiste','Pisciniste','Fontainier',
+    'Élagueur / Arboriste',
+  ],
+  '🏗️ Couverture & Toiture': [
+    'Couvreur','Zingueur','Étanchéiste toiture','Charpentier',
+  ],
+  '🧹 Entretien & Nettoyage': [
+    'Agent de nettoyage','Laveur de vitres','Nettoyage après travaux',
+    'Désinfection / Dératisation','Entretien piscine',
+  ],
+  '🚚 Transport & Déménagement': [
+    'Déménageur','Transporteur','Livreur','Chauffeur',
+  ],
+  '💻 Informatique & Tech': [
+    'Technicien informatique','Réparateur téléphones','Installateur réseau',
+    'Technicien vidéoprojecteur','Réparateur électroménager',
+  ],
+  '🍳 Cuisine & Alimentation': [
+    'Cuisinier à domicile','Pâtissier','Traiteur','Chef cuisinier',
+  ],
+  '👗 Mode & Couture': [
+    'Couturier / Tailleur','Brodeur','Cordonnier',
+  ],
+  '🚗 Auto & Moto': [
+    'Mécanicien automobile','Carrossier','Électricien auto',
+    'Pneumaticien','Laveur de voitures',
+  ],
+  '🏥 Santé & Bien-être': [
+    'Coiffeur à domicile','Esthéticienne','Masseur','Aide-soignant',
+    'Garde d\'enfants','Aide à domicile personne âgée',
+  ],
+  '📐 Ingénierie & Architecture': [
+    'Architecte','Géomètre','Ingénieur BTP','Dessinateur bâtiment',
+    'Conducteur de travaux','Métreur',
+  ],
+};
+
+// Tous les métiers à plat (trié)
+const TOUS_METIERS = Object.values(METIERS_MAP).flat().sort();
+
+const SKILLS_MAP = {
+  'Maçon':              ['Construction','Rénovation','Enduit','Béton armé','Coffrages','Agglos'],
+  'Carreleur':          ['Pose carrelage','Faïence','Mosaïque','Terrasse','Zellige','Joint époxy'],
+  'Plâtrier':           ['Enduit','Staff','Isolation','Faux plafond','Gypserie'],
+  'Coffreur':           ['Coffrage','Béton armé','Dalle','Fondations','Voile béton'],
+  'Ferrailleur':        ['Ferraillage','Béton armé','Fondations','Structures métalliques'],
+  'Terrassier':         ['Terrassement','Excavation','Nivellement','Voiries','Assainissement'],
+  'Étanchéiste':        ['Toiture terrasse','Sous-sol','Piscine','Balcon','Membrane bitumineuse'],
+  'Façadier':           ['Ravalement','Isolation thermique','Enduit de façade','Peinture extérieure'],
+  'Démolisseur':        ['Démolition','Déblaiement','Déconstruction sélective','Gros œuvre'],
+  'Électricien':        ['Tableau électrique','Prises & interrupteurs','Éclairage','Câblage','Domotique'],
+  'Électricien industriel': ['Armoires électriques','Moteurs','Automates','Câblage industriel'],
+  'Technicien solaire / Photovoltaïque': ['Panneaux solaires','Onduleurs','Batteries','Bilan énergétique'],
+  'Technicien groupe électrogène': ['Installation','Entretien','Dépannage','Groupe électrogène'],
+  'Domoticien':         ['Maison intelligente','KNX','Éclairage automatique','Volets connectés'],
+  'Plombier':           ['Dépannage urgent','Canalisations','Chauffe-eau','Robinetterie','Salle de bain'],
+  'Chauffagiste':       ['Chaudière','Radiateurs','Plancher chauffant','Maintenance'],
+  'Installateur sanitaire': ['Salle de bain','WC','Douche italienne','Baignoire','Douche'],
+  'Technicien chauffe-eau solaire': ['Chauffe-eau solaire','Ballon thermodynamique','Maintenance'],
+  'Plombier-chauffagiste': ['Chauffage central','Plomberie','Dépannage','Entretien chaudière'],
+  'Peintre':            ['Peinture intérieure','Peinture extérieure','Papier peint','Décoration','Laque'],
+  'Menuisier bois':     ['Portes','Fenêtres','Cuisines','Dressing','Meubles sur mesure','Parquet'],
+  'Menuisier aluminium':['Menuiserie alu','Vitrage','Vérandas','Pergolas','Garde-corps'],
+  'Menuisier PVC':      ['Fenêtres PVC','Portes PVC','Volets PVC','Isolation phonique'],
+  'Parqueteur':         ['Parquet massif','Parquet stratifié','Pose collée','Pose flottante'],
+  'Plaquiste':          ['Cloisons','Faux plafonds','Isolation','Doublage'],
+  'Staffeur / Gypserie':['Moulures','Corniches','Rosaces','Staff décoratif','Plafond arabe'],
+  'Mosaïste / Zellige': ['Zellige traditionnel','Mosaïque','Tadelakt','Décoration orientale'],
+  "Decorateur d'intérieur": ['Aménagement','Conseil couleurs','Plans 3D','Suivi chantier'],
+  'Tapissier':          ['Tissus','Rideaux','Canapés','Têtes de lit','Revêtements'],
+  'Technicien climatisation': ['Installation','Entretien','Dépannage','Froid industriel','VMC'],
+  'Frigoriste':         ['Chambres froides','Vitrines réfrigérées','Climatisation industrielle'],
+  'Technicien VMC':     ['VMC simple flux','VMC double flux','Entretien','Désinfection'],
+  'Technicien pompe à chaleur': ['PAC air/eau','PAC air/air','Réversible','Entretien'],
+  'Serrurier':          ['Serrures','Blindage','Coffres','Dépannage 24h/7j','Volets','Barreaux'],
+  'Installateur alarme':['Alarme intrusion','Détecteurs','Sirènes','Télésurveillance'],
+  'Technicien vidéosurveillance': ['Caméras IP','NVR','DVR','Contrôle d\'accès'],
+  'Installateur portail automatique': ['Portail coulissant','Portail battant','Barrière','Visiophone'],
+  'Vitrier':            ['Vitrage','Double vitrage','Miroirs','Verre trempé','Bris de glace'],
+  'Jardinier':          ['Taille haies','Gazon','Élagage','Arrosage automatique','Potager'],
+  'Paysagiste':         ['Aménagement jardin','Plantation','Allées','Bordures','Éclairage jardin'],
+  'Pisciniste':         ['Construction piscine','Entretien','Réparation liner','Traitement eau'],
+  'Fontainier':         ['Fontaines','Bassins','Systèmes d\'irrigation','Pompes'],
+  'Élagueur / Arboriste': ['Élagage','Abattage','Soins arbres','Traitement phytosanitaire'],
+  'Couvreur':           ['Tuiles','Ardoises','Zinc','Entretien toiture','Charpente'],
+  'Zingueur':           ['Gouttières','Descentes EP','Faîtières','Noues','Bavettes'],
+  'Étanchéiste toiture':['Membrane PVC','Bitume','Toiture terrasse','Bardage'],
+  'Charpentier':        ['Charpente bois','Pergola','Carport','Escaliers','Ossature bois'],
+  'Agent de nettoyage': ['Appartements','Bureaux','Vitres','Moquette','Sols'],
+  'Laveur de vitres':   ['Vitres','Façades','Velux','Nacelle','Rappel'],
+  'Nettoyage après travaux': ['Déblaiement','Nettoyage fin de chantier','Évacuation gravats'],
+  'Désinfection / Dératisation': ['Dératisation','Désinsectisation','Traitement termites'],
+  'Entretien piscine':  ['Traitement eau','Nettoyage fond','Entretien équipements','Hivernage'],
+  'Déménageur':         ['Emballage','Transport','Montage meubles','Débarras','Stockage'],
+  'Transporteur':       ['Transport marchandises','Petite livraison','Location camion'],
+  'Livreur':            ['Livraison express','Courses','Envois colis'],
+  'Chauffeur':          ['Transport personnes','Mise à disposition','Aéroport'],
+  'Technicien informatique': ['Réparation PC','Réseau','Virus','Récupération données','Formation'],
+  'Réparateur téléphones': ['iPhone','Android','Écran cassé','Batterie','Logiciel'],
+  'Installateur réseau':['Wi-Fi','Fibre optique','Réseau entreprise','Caméras IP'],
+  'Technicien vidéoprojecteur': ['Installation','Écrans','Sonorisation','Domotique'],
+  'Réparateur électroménager': ['Lave-linge','Réfrigérateur','Four','Lave-vaisselle'],
+  'Cuisinier à domicile': ['Cuisine marocaine','Cuisine internationale','Buffet','Événements'],
+  'Pâtissier':          ['Gâteaux','Pâtisserie orientale','Wedding cake','Chocolaterie'],
+  'Traiteur':           ['Mariages','Baptêmes','Événements d\'entreprise','Buffets'],
+  'Chef cuisinier':     ['Cours de cuisine','Chef à domicile','Menus gastronomiques'],
+  'Couturier / Tailleur': ['Confection sur mesure','Retouches','Djellaba','Caftan'],
+  'Brodeur':            ['Broderie traditionnelle','Broderie machine','Personnalisation'],
+  'Cordonnier':         ['Réparation chaussures','Semelles','Maroquinerie','Clés'],
+  'Mécanicien automobile': ['Révision','Freins','Vidange','Courroie','Embrayage'],
+  'Carrossier':         ['Tôlerie','Peinture auto','Débosselage','Pare-chocs'],
+  'Électricien auto':   ['Diagnostic','Batterie','Alternateur','Câblage auto'],
+  'Pneumaticien':       ['Pneus','Équilibrage','Géométrie','Jantes'],
+  'Laveur de voitures': ['Lavage intérieur','Lavage extérieur','Polissage','Traitement céramique'],
+  'Coiffeur à domicile':['Coupe','Coloration','Brushing','Chignon','Soins'],
+  'Esthéticienne':      ['Épilation','Manucure','Pédicure','Soin visage','Massage'],
+  'Masseur':            ['Massage relaxant','Massage sportif','Réflexologie'],
+  "Aide-soignant":      ['Soins à domicile','Prise de médicaments','Pansements'],
+  "Garde d'enfants":    ['Babysitting','Garde à domicile','Activités enfants'],
+  "Aide à domicile personne âgée": ['Accompagnement','Courses','Ménage','Repas'],
+  'Architecte':         ['Plans','Permis de construire','Suivi chantier','Rénovation'],
+  'Géomètre':           ['Bornage','Topographie','Relevés','Plans cadastraux'],
+  'Ingénieur BTP':      ['Études structurelles','Calculs béton','Expertise bâtiment'],
+  'Dessinateur bâtiment': ['Plans AutoCAD','Plans 3D','Dossiers techniques'],
+  'Conducteur de travaux': ['Coordination chantier','Planning','Suivi qualité','Réception'],
+  'Métreur':            ['Devis','Métrés','Appels d\'offres','Estimation travaux'],
+  // Legacy
+  'Climatisation':      ['Installation','Entretien','Dépannage','Froid industriel','VMC'],
+  'Serrurier':          ['Serrures','Blindage','Coffres','Dépannage 24h/7j','Volets'],
+  'Jardinier':          ['Taille haies','Gazon','Élagage','Arrosage','Potager'],
+  'Nettoyage':          ['Appartements','Bureaux','Après travaux','Vitres','Moquette'],
+  'Déménagement':       ['Emballage','Transport','Montage meubles','Débarras','Stockage'],
+  'Informatique':       ['Réparation PC','Réseau','Virus','Récupération données','Formation'],
+};
+
+// Injection dynamique des villes et métiers dans tous les <select>
+
+const PHOTO_GRADIENTS = [
+  'linear-gradient(135deg,#C8845A,#D4A853)',
+  'linear-gradient(135deg,#2A7B6F,#3DAD9C)',
+  'linear-gradient(135deg,#6B4C3B,#C8845A)',
+  'linear-gradient(135deg,#D4A853,#F0C878)',
+  'linear-gradient(135deg,#3D2B1F,#6B4C3B)',
+  'linear-gradient(135deg,#3DAD9C,#2A7B6F)',
+];
+
+let DB = {
+  users:    JSON.parse(localStorage.getItem('m3alam_users')    || '[]'),
+  artisans: JSON.parse(localStorage.getItem('m3alam_artisans') || '[]'),
+  reviews:  JSON.parse(localStorage.getItem('m3alam_reviews')  || '[]'),
+};
+
+// ═══════════════════════════════════════
+//  INDEXEDDB — photos & avatars persistants
+// ═══════════════════════════════════════
+let _idb = null;
+
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    if (_idb) { resolve(_idb); return; }
+    const req = indexedDB.open('m3alam_media', 2);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('photos'))
+        db.createObjectStore('photos', { keyPath: 'key' });
+      if (!db.objectStoreNames.contains('avatars'))
+        db.createObjectStore('avatars', { keyPath: 'artisanId' });
+    };
+    req.onsuccess = e => { _idb = e.target.result; resolve(_idb); };
+    req.onerror   = () => reject(req.error);
+  });
+}
+function idbPut(store, record) {
+  return openIDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).put(record);
+    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+  }));
+}
+function idbGet(store, key) {
+  return openIDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(store, 'readonly').objectStore(store).get(key);
+    req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+  }));
+}
+function idbDel(store, key) {
+  return openIDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).delete(key);
+    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+  }));
+}
+function idbAll(store) {
+  return openIDB().then(db => new Promise((res, rej) => {
+    const req = db.transaction(store, 'readonly').objectStore(store).getAll();
+    req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+  }));
+}
+// Sauvegarde une photo dans IndexedDB
+function dbSavePhoto(artisanId, slotIdx, dataUrl) {
+  return idbPut('photos', { key: artisanId+'_'+slotIdx, artisanId, slotIdx, dataUrl });
+}
+// Supprime une photo
+function dbDeletePhoto(artisanId, slotIdx) {
+  return idbDel('photos', artisanId+'_'+slotIdx);
+}
+// Charge les 8 photos d'un artisan
+function dbLoadPhotos(artisanId) {
+  return idbAll('photos').then(all => {
+    const photos = ['','','','','','','',''];
+    all.filter(p => p.artisanId === artisanId)
+       .forEach(p => { if(p.slotIdx >= 0 && p.slotIdx < 8) photos[p.slotIdx] = p.dataUrl; });
+    return photos;
+  });
+}
+// Sauvegarde avatar
+function dbSaveAvatar(artisanId, dataUrl) {
+  return idbPut('avatars', { artisanId, dataUrl });
+}
+// Charge avatar
+function dbLoadAvatar(artisanId) {
+  return idbGet('avatars', artisanId).then(rec => rec ? rec.dataUrl : null);
+}
+
+// Demo data
+if (DB.artisans.length === 0) {
+  DB.artisans = [
+    { id:'a1', name:'Hassan El Idrissi', metier:'Plombier', city:'Casablanca', exp:'5-10 ans', rate:180, bio:'Plombier certifié avec plus de 8 ans d\'expérience. Spécialisé dans la rénovation de salles de bain et le dépannage d\'urgence. Disponible 7j/7.', skills:['Dépannage urgent','Canalisations','Chauffe-eau','Salle de bain'], verified:true, available:true },
+    { id:'a2', name:'Youssef Amrani',    metier:'Électricien', city:'Rabat',       exp:'3-5 ans',  rate:150, bio:'Électricien qualifié, spécialiste de l\'installation électrique résidentielle et commerciale. Devis gratuit.', skills:['Tableau électrique','Éclairage','Domotique'], verified:true, available:true },
+    { id:'a3', name:'Karim Benali',      metier:'Maçon',       city:'Marrakech',   exp:'Plus de 10 ans', rate:200, bio:'Maçon expert avec plus de 12 ans d\'expérience dans la construction et la rénovation. Travail soigné et dans les délais.', skills:['Construction','Rénovation','Enduit','Béton armé'], verified:false, available:false },
+    { id:'a4', name:'Mehdi Saidi',       metier:'Peintre',     city:'Casablanca',  exp:'3-5 ans',  rate:120, bio:'Peintre professionnel, amoureux du détail. Je transforme vos espaces avec des couleurs et finitions parfaites.', skills:['Peinture intérieure','Décoration','Enduit décoratif'], verified:true, available:true },
+    { id:'a5', name:'Omar Fassi',        metier:'Menuisier',   city:'Fès',         exp:'5-10 ans', rate:220, bio:'Menuisier artisanal spécialisé dans la fabrication de mobilier sur mesure et la restauration de meubles anciens.', skills:['Dressing','Meubles sur mesure','Parquet'], verified:false, available:true },
+    { id:'a6', name:'Rachid Tazi',       metier:'Carreleur',   city:'Agadir',      exp:'1-3 ans',  rate:130, bio:'Carreleur précis et minutieux. Pose de carrelage, faïence et mosaïque pour cuisines, salles de bain et terrasses.', skills:['Pose carrelage','Mosaïque','Terrasse'], verified:true, available:true },
+    { id:'a7', name:'Amine Chaoui',      metier:'Climatisation', city:'Casablanca',exp:'5-10 ans', rate:170, bio:'Technicien en climatisation certifié. Installation, entretien et dépannage de tous types de climatiseurs et PAC.', skills:['Installation','Entretien','Dépannage'], verified:true, available:false },
+    { id:'a8', name:'Said Lahlou',       metier:'Jardinier',   city:'Rabat',       exp:'1-3 ans',  rate:100, bio:'Jardinier passionné, je prends soin de vos espaces verts avec expertise et respect de l\'environnement.', skills:['Taille haies','Gazon','Élagage'], verified:false, available:true },
+  ];
+  DB.reviews = [
+    { artisanId:'a1', author:'Fatima Z.', rating:5, text:'Excellent travail, rapide et propre. Je recommande vivement !', date:'2024-11-15' },
+    { artisanId:'a1', author:'Mohamed K.', rating:4, text:'Bon plombier, très professionnel. A résolu le problème rapidement.', date:'2024-10-28' },
+    { artisanId:'a2', author:'Sara B.', rating:5, text:'Parfait ! Travail impeccable, très ponctuel.', date:'2024-11-10' },
+    { artisanId:'a3', author:'Khalid M.', rating:5, text:'Travail de qualité, très satisfait de la rénovation.', date:'2024-09-05' },
+    { artisanId:'a4', author:'Nadia R.', rating:4, text:'Belle peinture, propre et soignée. Bon rapport qualité-prix.', date:'2024-11-01' },
+    { artisanId:'a5', author:'Tarik A.', rating:5, text:'Un vrai artisan, le dressing est magnifique !', date:'2024-10-15' },
+    { artisanId:'a7', author:'Lina S.', rating:4, text:'Installation rapide, climatiseur fonctionne parfaitement.', date:'2024-08-20' },
+  ];
+  save();
+}
+
+function save() {
+  localStorage.setItem('m3alam_users',    JSON.stringify(DB.users));
+  localStorage.setItem('m3alam_artisans', JSON.stringify(DB.artisans));
+  localStorage.setItem('m3alam_reviews',  JSON.stringify(DB.reviews));
+}
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let currentUser = JSON.parse(sessionStorage.getItem('m3alam_session') || 'null');
+let currentRole = 'user';
+let currentFilter = 'all';
+let displayedArtisans = [...DB.artisans];
+let currentDetailArtisan = null;
+let reviewStars = 0;
+let artisanPhotos = ['','','','','','','',''];
+
+// ═══════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════
+function openAuth(mode) {
+  document.getElementById('auth-modal').classList.add('open');
+  if (mode === 'register' || mode === 'register-artisan') {
+    switchAuthTab('register', document.querySelectorAll('.auth-tab')[1]);
+    if (mode === 'register-artisan') selectRole('artisan');
+  } else {
+    switchAuthTab('login', document.querySelectorAll('.auth-tab')[0]);
+  }
+}
+function closeAuth() { document.getElementById('auth-modal').classList.remove('open'); }
+function switchAuthTab(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-login').style.display   = tab==='login'    ? '' : 'none';
+  document.getElementById('tab-register').style.display= tab==='register' ? '' : 'none';
+}
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById('role-user').classList.toggle('selected', role==='user');
+  document.getElementById('role-artisan').classList.toggle('selected', role==='artisan');
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pwd   = document.getElementById('login-pwd').value;
+  if (!email || !pwd) { showToast('⚠️ Remplissez tous les champs'); return; }
+
+  // Compte administrateur
+  if (email === 'admin@m3alam.ma' && pwd === 'M3alamAdmin2024') {
+    currentUser = { role:'admin', name:'Administrateur', email };
+    sessionStorage.setItem('m3alam_session', JSON.stringify(currentUser));
+    closeAuth(); showPage('admin'); initAdminPage(); return;
+  }
+
+  // Artisans enregistrés
+  const artisan = DB.artisans.find(a => a.email === email && a.password === pwd);
+  if (artisan) { loginAsArtisan(artisan); return; }
+
+  const user = DB.users.find(u => u.email === email && u.password === pwd);
+  if (user) { loginAsUser(user); return; }
+
+  // Raccourcis démo
+  if (email === 'artisan@demo.com') { loginAsArtisan(DB.artisans[0]); return; }
+  if (email === 'user@demo.com')    { loginAsUser({name:'Demo User', email}); return; }
+
+  showToast('❌ Email ou mot de passe incorrect');
+}
+
+function doRegister() {
+  const fname = document.getElementById('reg-fname').value.trim();
+  const lname = document.getElementById('reg-lname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const city  = document.getElementById('reg-city').value;
+  const pwd   = document.getElementById('reg-pwd').value;
+
+  if (!fname||!lname||!email||!phone||!city||!pwd) { showToast('⚠️ Remplissez tous les champs'); return; }
+  if (pwd.length < 8) { showToast('⚠️ Mot de passe trop court (8 min)'); return; }
+
+  if (currentRole === 'artisan') {
+    const artisan = { id:'a'+Date.now(), name:`${fname} ${lname}`, email, phone, city, password:pwd,
+      metier:'', exp:'', rate:0, bio:'', skills:[], verified:false, available:true };
+    DB.artisans.push(artisan); save();
+    loginAsArtisan(artisan);
+  } else {
+    const user = { id:'u'+Date.now(), name:`${fname} ${lname}`, email, phone, city, password:pwd };
+    DB.users.push(user); save();
+    loginAsUser(user);
+  }
+}
+
+function loginAsArtisan(artisan) {
+  currentUser = { ...artisan, role:'artisan' };
+  sessionStorage.setItem('m3alam_session', JSON.stringify(currentUser));
+  closeAuth();
+  showPage('artisan');
+  initArtisanDashboard();
+}
+function loginAsUser(user) {
+  currentUser = { ...user, role:'user' };
+  sessionStorage.setItem('m3alam_session', JSON.stringify(currentUser));
+  closeAuth();
+  showPage('user');
+  initUserPage();
+}
+function logout() {
+  sessionStorage.removeItem('m3alam_session');
+  currentUser = null;
+  showPage('landing');
+}
+
+// ═══════════════════════════════════════
+//  PAGES
+// ═══════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if (name === 'user' || name === 'landing') trackVisit();
+}
+
+// ═══════════════════════════════════════
+//  ARTISAN DASHBOARD
+// ═══════════════════════════════════════
+function initArtisanDashboard() {
+  const a = DB.artisans.find(x=>x.id===currentUser.id) || currentUser;
+  const initial = (a.name||'A')[0].toUpperCase();
+  document.getElementById('artisan-avatar-nav').textContent = initial;
+  document.getElementById('artisan-name-nav').textContent   = (a.name||'').split(' ')[0];
+  document.getElementById('artisan-big-avatar').childNodes[0].textContent = initial;
+  document.getElementById('profile-display-name').textContent   = a.name||'';
+  document.getElementById('profile-display-metier').textContent = a.metier||'Métier non renseigné';
+  document.getElementById('profile-display-city').textContent   = a.city||'';
+
+  // Pre-fill form
+  if(a.name){const p=a.name.split(' ');document.getElementById('pf-fname').value=p[0]||'';document.getElementById('pf-lname').value=p.slice(1).join(' ')||'';}
+  document.getElementById('pf-phone').value  = a.phone||'';
+  document.getElementById('pf-email').value  = a.email||'';
+  document.getElementById('pf-bio').value    = a.bio||'';
+  document.getElementById('pf-rate').value   = a.rate||'';
+  if(a.metier){acSetValue('pf-metier', a.metier); renderSkills(a.metier,a.skills||[]);}
+  if(a.city){acSetValue('pf-city', a.city);}
+  if(a.exp){document.getElementById('pf-exp').value=a.exp;}
+
+  // Reviews
+  const revs = DB.reviews.filter(r=>r.artisanId===a.id);
+  const avg  = revs.length ? (revs.reduce((s,r)=>s+r.rating,0)/revs.length).toFixed(1) : '—';
+  document.getElementById('artisan-rating-stat').textContent  = avg;
+  document.getElementById('artisan-reviews-count').textContent= revs.length;
+  renderArtisanReviews(revs);
+
+  // Charger photos et avatar depuis IndexedDB
+  dbLoadPhotos(a.id).then(photos => {
+    artisanPhotos = photos;
+    initPhotosGrid();
+  });
+  dbLoadAvatar(a.id).then(dataUrl => {
+    if (dataUrl) {
+      const av = document.getElementById('artisan-big-avatar');
+      av.style.backgroundImage = `url(${dataUrl})`;
+      av.style.backgroundSize  = 'cover';
+      av.style.backgroundPosition = 'center';
+      if(av.childNodes[0]) av.childNodes[0].textContent = '';
+    }
+  });
+
+  // Mettre à jour la checklist du tableau de bord
+  updateChecklist();
+
+  // pf-metier change handled by acSelect callback
+  showArtisanSection('stats', document.querySelector('.nav-item'));
+}
+
+function showArtisanSection(name, el) {
+  document.querySelectorAll('.artisan-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  if(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+}
+
+function renderSkills(metier, selected) {
+  const c = document.getElementById('skills-container');
+  const skills = SKILLS_MAP[metier]||[];
+  c.innerHTML = skills.map(s=>`<div class="skill-tag ${selected.includes(s)?'selected':''}" onclick="toggleSkill(this,'${s}')">${s}</div>`).join('');
+}
+function toggleSkill(el,s){el.classList.toggle('selected');}
+function getSelectedSkills(){return[...document.querySelectorAll('.skill-tag.selected')].map(e=>e.textContent);}
+
+function saveProfile() {
+  const fname  = document.getElementById('pf-fname').value.trim();
+  const lname  = document.getElementById('pf-lname').value.trim();
+  const phone  = document.getElementById('pf-phone').value.trim();
+  const email  = document.getElementById('pf-email').value.trim();
+  const metier = document.getElementById('pf-metier').value;
+  const exp    = document.getElementById('pf-exp').value;
+  const city   = document.getElementById('pf-city').value;
+  const rate   = document.getElementById('pf-rate').value;
+  const bio    = document.getElementById('pf-bio').value.trim();
+  const skills = getSelectedSkills();
+
+  if(!fname||!lname||!metier||!city){ showToast('⚠️ Remplissez les champs obligatoires'); return; }
+
+  const idx = DB.artisans.findIndex(a=>a.id===currentUser.id);
+  const updated = { ...DB.artisans[idx]||currentUser, name:`${fname} ${lname}`, phone, email, metier, exp, city, rate:+rate, bio, skills };
+  if(idx>=0) DB.artisans[idx]=updated; else DB.artisans.push(updated);
+  currentUser={...currentUser,...updated};
+  sessionStorage.setItem('m3alam_session',JSON.stringify(currentUser));
+  save();
+
+  // Mettre à jour l'affichage du profil
+  document.getElementById('profile-display-name').textContent   = updated.name;
+  document.getElementById('profile-display-metier').textContent = metier;
+  document.getElementById('profile-display-city').textContent   = city;
+  document.getElementById('artisan-name-nav').textContent = fname;
+
+  // Mettre à jour la checklist
+  updateChecklist();
+  showToast('✅ Profil enregistré avec succès !');
+}
+
+// Met à jour dynamiquement la checklist du tableau de bord
+function updateChecklist() {
+  const a = DB.artisans.find(x=>x.id===currentUser.id) || currentUser;
+
+  function setCheck(id, done, label) {
+    const icon = document.getElementById(id+'-icon');
+    const lbl  = document.getElementById(id+'-label');
+    if(!icon || !lbl) return;
+    if(done) {
+      icon.textContent = '✓';
+      icon.style.color = 'var(--teal)';
+      lbl.style.color  = 'inherit';
+      lbl.textContent  = label;
+    } else {
+      icon.textContent = '○';
+      icon.style.color = '';
+      lbl.style.color  = '#bbb';
+      lbl.textContent  = label;
+    }
+  }
+
+  // Avatar
+  dbLoadAvatar(currentUser.id).then(av => {
+    setCheck('check-avatar', !!av, 'Photo de profil');
+  });
+
+  // Infos de base
+  setCheck('check-info', !!(a.name && a.metier && a.city), 'Informations de base (nom, métier, ville)');
+
+  // Description
+  setCheck('check-bio', !!(a.bio && a.bio.length > 20), 'Description détaillée');
+
+  // Photos
+  dbLoadPhotos(currentUser.id).then(photos => {
+    const count = photos.filter(p=>p).length;
+    setCheck('check-photos', count > 0, `Photos de réalisations (${count}/8)`);
+  });
+}
+
+function initPhotosGrid() {
+  const grid = document.getElementById('photos-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<8;i++){
+    const slot=document.createElement('div');
+    slot.className='photo-slot'; slot.dataset.index=i;
+    if(artisanPhotos[i]){
+      slot.innerHTML=`<img src="${artisanPhotos[i]}"><button class="photo-delete" onclick="deletePhoto(${i})">✕</button>`;
+    } else {
+      slot.innerHTML=`<div class="ps-icon">📷</div><div class="ps-text">Ajouter une photo</div>`;
+      slot.onclick=()=>{ document.getElementById('photo-upload').click(); document.getElementById('photo-upload').dataset.slot=i; };
+    }
+    grid.appendChild(slot);
+  }
+}
+
+function handlePhotoUpload(input) {
+  const slot = +input.dataset.slot;
+  const file = input.files[0]; if(!file) return;
+  // Vérifier taille (max 5MB)
+  if(file.size > 5 * 1024 * 1024) {
+    showToast('⚠️ Image trop grande (max 5 MB)'); input.value=''; return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const dataUrl = e.target.result;
+    artisanPhotos[slot] = dataUrl;
+    initPhotosGrid();
+    // Sauvegarder dans IndexedDB
+    dbSavePhoto(currentUser.id, slot, dataUrl)
+      .then(() => { showToast('📷 Photo sauvegardée !'); updateChecklist(); })
+      .catch(() => showToast('⚠️ Erreur de sauvegarde'));
+    input.value = '';
+  };
+  reader.readAsDataURL(file);
+}
+function deletePhoto(i) {
+  artisanPhotos[i] = '';
+  initPhotosGrid();
+  dbDeletePhoto(currentUser.id, i)
+    .then(() => { showToast('🗑️ Photo supprimée'); updateChecklist(); })
+    .catch(() => {});
+}
+
+function triggerAvatarUpload(){ document.getElementById('avatar-upload').click(); }
+function handleAvatarUpload(input){
+  const file=input.files[0]; if(!file) return;
+  if(file.size > 5 * 1024 * 1024){
+    showToast('⚠️ Image trop grande (max 5 MB)'); input.value=''; return;
+  }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const dataUrl = e.target.result;
+    const av=document.getElementById('artisan-big-avatar');
+    av.style.backgroundImage=`url(${dataUrl})`;
+    av.style.backgroundSize='cover';
+    av.style.backgroundPosition='center';
+    if(av.childNodes[0]) av.childNodes[0].textContent='';
+    dbSaveAvatar(currentUser.id, dataUrl)
+      .then(()=> { showToast('✅ Photo de profil sauvegardée !'); updateChecklist(); })
+      .catch(()=> showToast('⚠️ Erreur de sauvegarde'));
+    input.value='';
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderArtisanReviews(revs) {
+  const c = document.getElementById('artisan-reviews-list');
+  if(!revs.length){ c.innerHTML='<div class="empty-state"><div class="es-icon">⭐</div><div class="es-title">Aucun avis pour l\'instant</div><div class="es-sub">Vos premiers clients laisseront leurs avis ici</div></div>'; return; }
+  c.innerHTML = revs.map(r=>`
+    <div class="review-card">
+      <div class="rc-avatar">${r.author[0]}</div>
+      <div class="rc-content">
+        <div class="rc-header"><div class="rc-name">${r.author}</div><div class="rc-date">${r.date}</div></div>
+        <div class="rc-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+        <div class="rc-text">${r.text}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+//  USER PAGE
+// ═══════════════════════════════════════
+function initUserPage() {
+  document.getElementById('user-greeting').textContent = `Bonjour, ${(currentUser.name||'').split(' ')[0]} !`;
+  displayedArtisans = [...DB.artisans];
+  sortAndRender();
+}
+
+// Lit la valeur d'un champ autocomplete (hidden ou texte visible)
+function acVal(id) {
+  const hidden = document.getElementById(id);
+  const inp    = document.getElementById(id+'-input');
+  // Priorité au champ caché (valeur confirmée), sinon texte tapé
+  if (hidden && hidden.value) return hidden.value;
+  if (inp && inp.value.trim()) return inp.value.trim();
+  return '';
+}
+
+function searchArtisans() {
+  const metier = acVal('search-metier');
+  const city   = acVal('search-city');
+  displayedArtisans = DB.artisans.filter(a =>
+    (!metier || a.metier.toLowerCase().includes(metier.toLowerCase())) &&
+    (!city   || a.city.toLowerCase().includes(city.toLowerCase()))
+  );
+  currentFilter='all';
+  document.querySelectorAll('.filter-chip').forEach((c,i)=>c.classList.toggle('active',i===0));
+  sortAndRender();
+}
+
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  applyFilter();
+}
+
+function applyFilter(){
+  let base=[...DB.artisans];
+  const metier = acVal('search-metier');
+  const city   = acVal('search-city');
+  if(metier) base=base.filter(a=>a.metier.toLowerCase().includes(metier.toLowerCase()));
+  if(city)   base=base.filter(a=>a.city.toLowerCase().includes(city.toLowerCase()));
+  switch(currentFilter){
+    case 'top':       base=base.filter(a=>getAvgRating(a.id)>=4); break;
+    case 'available': base=base.filter(a=>a.available); break;
+    case 'cheap':     base=base.filter(a=>a.rate<=150); break;
+    case 'verified':  base=base.filter(a=>a.verified); break;
+    case 'exp':       base=base.filter(a=>a.exp==='5-10 ans'||a.exp==='Plus de 10 ans'); break;
+  }
+  displayedArtisans=base;
+  sortAndRender();
+}
+
+function getAvgRating(id){
+  const r=DB.reviews.filter(x=>x.artisanId===id);
+  return r.length?(r.reduce((s,x)=>s+x.rating,0)/r.length):0;
+}
+function getStars(rating){ const r=Math.round(rating); return '★'.repeat(r)+'☆'.repeat(5-r); }
+
+function sortAndRender(){
+  const sort=document.getElementById('sort-select')?.value||'rating';
+  let arr=[...displayedArtisans];
+  switch(sort){
+    case 'rating':     arr.sort((a,b)=>getAvgRating(b.id)-getAvgRating(a.id)); break;
+    case 'price-asc':  arr.sort((a,b)=>a.rate-b.rate); break;
+    case 'price-desc': arr.sort((a,b)=>b.rate-a.rate); break;
+    case 'exp': arr.sort((a,b)=>{const o=['Moins d\'1 an','1-3 ans','3-5 ans','5-10 ans','Plus de 10 ans'];return o.indexOf(b.exp)-o.indexOf(a.exp);}); break;
+  }
+  renderArtisanGrid(arr);
+}
+
+function renderArtisanGrid(artisans){
+  const grid=document.getElementById('artisan-grid');
+  document.getElementById('results-num').textContent=artisans.length;
+  if(!artisans.length){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🔍</div><div class="es-title">Aucun artisan trouvé</div><div class="es-sub">Modifiez vos critères de recherche</div></div>';
+    return;
+  }
+  grid.innerHTML=artisans.map(a=>{
+    const revs=DB.reviews.filter(r=>r.artisanId===a.id);
+    const avg=revs.length?(revs.reduce((s,r)=>s+r.rating,0)/revs.length).toFixed(1):'Nouveau';
+    const stars=revs.length?getStars(+avg):'☆☆☆☆☆';
+    const skills=(a.skills||[]).slice(0,3);
+    const photos=[0,1,2].map(i=>`background:${PHOTO_GRADIENTS[(a.id.charCodeAt(1)+i)%PHOTO_GRADIENTS.length]}`);
+    return `
+    <div class="artisan-card" onclick="openDetail('${a.id}')">
+      <div class="card-photos">
+        <div class="card-photos-grid">
+          <div class="card-photo card-photo-main" style="${photos[0]}"></div>
+          <div style="display:grid;grid-template-rows:1fr 1fr">
+            <div class="card-photo" style="${photos[1]}"></div>
+            <div class="card-photo" style="${photos[2]}"></div>
+          </div>
+        </div>
+        <div class="card-badge ${a.verified?'verified':''}">${a.verified?'🏅 Vérifié':'⏳ En attente'}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-avatar">${a.name[0]}</div>
+          <div>
+            <div class="card-name">${a.name}</div>
+            <div class="card-metier">${a.metier||'Métier non défini'}</div>
+            <div class="card-loc">📍 ${a.city||'—'}</div>
+          </div>
+        </div>
+        <div class="card-rating">
+          <span class="rating-stars">${stars}</span>
+          <span class="rating-val">${avg}</span>
+          <span class="rating-count">(${revs.length} avis)</span>
+          ${a.available?'<span style="margin-left:auto;font-size:0.75rem;color:var(--teal);font-weight:600">✅ Disponible</span>':'<span style="margin-left:auto;font-size:0.75rem;color:#ccc">⛔ Occupé</span>'}
+        </div>
+        <div class="card-tags">${skills.map(s=>`<span class="ctag">${s}</span>`).join('')}</div>
+        <div class="card-footer">
+          <div class="card-price">${a.rate?a.rate+' DH':'Sur devis'} <span>/heure</span></div>
+          <button class="btn-contact" onclick="event.stopPropagation();openDetail('${a.id}')">Contacter</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  DETAIL MODAL
+// ═══════════════════════════════════════
+function openDetail(id){
+  const a=DB.artisans.find(x=>x.id===id); if(!a) return;
+  currentDetailArtisan=a;
+  const revs=DB.reviews.filter(r=>r.artisanId===id);
+  const avg=revs.length?(revs.reduce((s,r)=>s+r.rating,0)/revs.length).toFixed(1):'Nouveau';
+
+  document.getElementById('detail-name').textContent=a.name;
+  document.getElementById('detail-meta').textContent=`${a.metier||''} · ${a.city||''} · ★ ${avg} (${revs.length} avis)`;
+  document.getElementById('detail-bio').textContent=a.bio||'Aucune description renseignée.';
+  document.getElementById('detail-tags').innerHTML=(a.skills||[]).map(s=>`<span class="ctag">${s}</span>`).join('');
+
+  document.getElementById('detail-info-list').innerHTML=[
+    ['📍','Ville',a.city||'—'],
+    ['💼','Métier',a.metier||'—'],
+    ['🎖️','Expérience',a.exp||'—'],
+    ['💰','Tarif',a.rate?(a.rate+' DH/h'):'Sur devis'],
+    ['📞','Téléphone',a.phone||'+212 6XX XXX XXX'],
+    ['✅','Statut',a.available?'Disponible':'Actuellement occupé'],
+    ['🏅','Vérification',a.verified?'Artisan vérifié':'En attente'],
+  ].map(([ic,lb,v])=>`<div class="dil-item"><span class="dil-icon">${ic}</span><div><div class="dil-val">${v}</div><div class="dil-lbl">${lb}</div></div></div>`).join('');
+
+  // Charger photos réelles depuis IndexedDB
+  const detailAvatar = document.getElementById('detail-avatar');
+  detailAvatar.style.backgroundImage='';
+  detailAvatar.style.backgroundSize='';
+  detailAvatar.textContent=a.name[0];
+
+  dbLoadPhotos(id).then(photos => {
+    const real = photos.filter(p=>p);
+    // Hero background — 2 premières vraies photos
+    const bg=document.getElementById('detail-photos-bg');
+    bg.innerHTML=[0,1].map(i=>{
+      return real[i]
+        ? `<div class="dph" style="background:url(${real[i]}) center/cover no-repeat"></div>`
+        : `<div class="dph" style="background:${PHOTO_GRADIENTS[(id.charCodeAt(1)+i)%PHOTO_GRADIENTS.length]}"></div>`;
+    }).join('');
+    // Thumbnails — toutes les photos (jusqu'à 8)
+    window._lbCurrentPhotos = real;
+    const thumbs = real.length > 0
+      ? real.map((src, i) => `<div class="dph-thumb" style="background:url(${src}) center/cover no-repeat" onclick="openLightbox(window._lbCurrentPhotos,${i})"></div>`)
+      : [0,1,2,3].map(i => `<div class="dph-thumb" style="background:${PHOTO_GRADIENTS[(id.charCodeAt(1)+i+2)%PHOTO_GRADIENTS.length]}"></div>`);
+    document.getElementById('detail-photos-row').innerHTML = thumbs.join('');
+  });
+
+  // Charger avatar réel
+  dbLoadAvatar(id).then(av=>{
+    if(av){
+      detailAvatar.style.backgroundImage=`url(${av})`;
+      detailAvatar.style.backgroundSize='cover';
+      detailAvatar.style.backgroundPosition='center';
+      detailAvatar.textContent='';
+    }
+  });
+
+  renderDetailReviews(revs);
+  resetStars();
+  document.getElementById('review-text').value='';
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeDetail(){ document.getElementById('detail-modal').classList.remove('open'); }
+
+function renderDetailReviews(revs){
+  const c=document.getElementById('detail-reviews-list');
+  if(!revs.length){ c.innerHTML='<div style="color:#bbb;font-size:0.85rem;padding:12px 0">Soyez le premier à laisser un avis !</div>'; return; }
+  c.innerHTML=revs.map(r=>`
+    <div style="padding:14px 0;border-bottom:1px solid #f5f0ea">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div style="font-weight:600;font-size:0.88rem">${r.author}</div>
+        <div style="font-size:0.75rem;color:#bbb">${r.date}</div>
+      </div>
+      <div style="color:var(--gold);font-size:0.85rem;margin-bottom:4px">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      <div style="font-size:0.85rem;color:#666;line-height:1.5">${r.text}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+//  REVIEWS
+// ═══════════════════════════════════════
+function setReviewStar(n){
+  reviewStars=n;
+  document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('active',i<n));
+}
+function resetStars(){ reviewStars=0; document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('active')); }
+
+function submitReview(){
+  if(!reviewStars){ showToast('⚠️ Sélectionnez une note'); return; }
+  const text=document.getElementById('review-text').value.trim();
+  if(!text){ showToast('⚠️ Écrivez votre avis'); return; }
+  const review={ artisanId:currentDetailArtisan.id, author:(currentUser?.name||'Anonyme').split(' ')[0]+' '+((currentUser?.name||'A').split(' ')[1]||'').charAt(0)+'.', rating:reviewStars, text, date:new Date().toISOString().split('T')[0] };
+  DB.reviews.push(review); save();
+  const revs=DB.reviews.filter(r=>r.artisanId===currentDetailArtisan.id);
+  renderDetailReviews(revs);
+  resetStars(); document.getElementById('review-text').value='';
+  showToast('✅ Avis publié avec succès !');
+  sortAndRender();
+}
+
+// ═══════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// Close modals on overlay click
+document.getElementById('auth-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAuth();});
+document.getElementById('detail-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
+
+// ═══════════════════════════════════════
+//  LIGHTBOX
+// ═══════════════════════════════════════
+let lbPhotos = [];
+let lbIndex  = 0;
+
+function openLightbox(photos, idx) {
+  lbPhotos = photos;
+  lbIndex  = idx;
+  lbShow();
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown', lbKeyHandler);
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.removeEventListener('keydown', lbKeyHandler);
+}
+
+function lbShow() {
+  document.getElementById('lightbox-img').src = lbPhotos[lbIndex];
+  document.getElementById('lightbox-counter').textContent =
+    `${lbIndex + 1} / ${lbPhotos.length}`;
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + lbPhotos.length) % lbPhotos.length;
+  const img = document.getElementById('lightbox-img');
+  img.style.animation = 'none';
+  requestAnimationFrame(() => { img.style.animation = ''; lbShow(); });
+}
+
+function lbKeyHandler(e) {
+  if (e.key === 'ArrowRight') lbNav(1);
+  if (e.key === 'ArrowLeft')  lbNav(-1);
+  if (e.key === 'Escape')     closeLightbox();
+}
+
+// ═══════════════════════════════════════
+//  TRADUCTIONS ARABES
+// ═══════════════════════════════════════
+const AR_VILLES = {
+  'Casablanca':'الدار البيضاء','Rabat':'الرباط','Marrakech':'مراكش',
+  'Fès':'فاس','Tanger':'طنجة','Agadir':'أكادير','Meknès':'مكناس',
+  'Oujda':'وجدة','Kénitra':'القنيطرة','Tétouan':'تطوان',
+  'Salé':'سلا','Témara':'تمارة','Mohammedia':'المحمدية',
+  'El Jadida':'الجديدة','Settat':'سطات','Berrechid':'برشيد',
+  'Safi':'آسفي','Essaouira':'الصويرة','Ben Guerir':'بن جرير',
+  'Khémisset':'الخميسات','Sidi Kacem':'سيدي قاسم','Sidi Slimane':'سيدي سليمان',
+  'Béni Mellal':'بني ملال','Khouribga':'خريبكة','Fquih Ben Salah':'الفقيه بن صالح',
+  'Azilal':'أزيلال','Ifrane':'إفران','Azrou':'أزرو','Khénifra':'خنيفرة',
+  'Midelt':'ميدلت','Errachidia':'الراشيدية','Taounate':'تاونات','Taza':'تازة',
+  'Al Hoceïma':'الحسيمة','Larache':'العرائش','Asilah':'أصيلة','Chefchaouen':'شفشاون',
+  'Martil':'مرتيل','Fnideq':'الفنيدق','Mdiq':'المضيق','Ouazzane':'وزان',
+  'Tiznit':'تيزنيت','Taroudant':'تارودانت','Inezgane':'إنزكان',
+  'Ait Melloul':'أيت ملول','Biougra':'بيوكرى','Ouled Teima':'أولاد تايمة',
+  'Nador':'الناظور','Berkane':'بركان','Taourirt':'تاوريرت','Jerada':'جرادة',
+  'Guercif':'كرسيف','Saïdia':'السعيدية','Bouarfa':'بوعرفة',
+  'Ouarzazate':'ورزازات','Zagora':'زاكورة','Tinghir':'تنغير',
+  'Rissani':'الريصاني','Erfoud':'أرفود',
+  'Laâyoune':'العيون','Boujdour':'بوجدور','Tarfaya':'طرفاية','Es Semara':'السمارة',
+  'Dakhla':'الداخلة','Aousserd':'أوسرد',
+  'Guelmim':'كلميم','Tan-Tan':'طانطان','Sidi Ifni':'سيدي إفني','Assa':'أسا',
+  'Kasba Tadla':'قصبة تادلة','Bouskoura':'بوسكورة',
+  'Beni Mellal':'بني ملال','Kenitra':'القنيطرة','Temara':'تمارة',
+};
+
+const AR_METIERS = {
+  'Maçon':'بناء','Carreleur':'فراش البلاط','Plâtrier':'مجبص',
+  'Coffreur':'نجار قوالب','Ferrailleur':'حداد بناء','Terrassier':'حفار',
+  'Étanchéiste':'عازل مائي','Façadier':'عامل واجهات','Démolisseur':'هادم',
+  'Électricien':'كهربائي','Électricien industriel':'كهربائي صناعي',
+  'Technicien solaire / Photovoltaïque':'تقني الطاقة الشمسية',
+  'Technicien groupe électrogène':'تقني المولدات','Domoticien':'تقني المنزل الذكي',
+  'Plombier':'سباك','Chauffagiste':'تقني التدفئة',
+  'Installateur sanitaire':'مركب معدات صحية',
+  'Technicien chauffe-eau solaire':'تقني السخان الشمسي',
+  'Plombier-chauffagiste':'سباك وتقني تدفئة','Peintre':'دهان',
+  'Menuisier bois':'نجار خشب','Menuisier aluminium':'نجار ألومينيوم',
+  'Menuisier PVC':'نجار PVC','Parqueteur':'فارش الباركيه','Plaquiste':'فارش الجبس',
+  'Staffeur / Gypserie':'مزخرف الجبس','Mosaïste / Zellige':'صانع الزليج',
+  "Decorateur d'intérieur":'مزين داخلي','Tapissier':'منجد',
+  'Technicien climatisation':'تقني التكييف','Frigoriste':'تقني التبريد',
+  'Technicien VMC':'تقني التهوية','Technicien pompe à chaleur':'تقني مضخة الحرارة',
+  'Serrurier':'حداد أبواب','Installateur alarme':'مركب أنظمة الإنذار',
+  'Technicien vidéosurveillance':'تقني المراقبة بالكاميرا',
+  'Installateur portail automatique':'مركب البوابات الأوتوماتيكية','Vitrier':'زجاج',
+  'Jardinier':'بستاني','Paysagiste':'مهندس حدائق','Pisciniste':'تقني المسابح',
+  'Fontainier':'تقني النوافير','Élagueur / Arboriste':'مشذب الأشجار',
+  'Couvreur':'مغطي الأسطح','Zingueur':'تقني الزنك','Étanchéiste toiture':'عازل السقف',
+  'Charpentier':'نجار هياكل','Agent de nettoyage':'عامل نظافة',
+  'Laveur de vitres':'منظف زجاج','Nettoyage après travaux':'تنظيف بعد البناء',
+  'Désinfection / Dératisation':'مكافحة الحشرات','Entretien piscine':'صيانة المسابح',
+  'Déménageur':'ناقل عفش','Transporteur':'ناقل بضائع','Livreur':'مندوب توصيل',
+  'Chauffeur':'سائق','Technicien informatique':'تقني معلوماتية',
+  'Réparateur téléphones':'إصلاح هواتف','Installateur réseau':'مركب شبكات',
+  'Réparateur électroménager':'إصلاح أجهزة كهرومنزلية',
+  'Cuisinier à domicile':'طباخ منزلي','Pâtissier':'حلواني',
+  'Traiteur':'مورد وجبات','Chef cuisinier':'طاهي',
+  'Couturier / Tailleur':'خياط','Brodeur':'طراز','Cordonnier':'إسكافي',
+  'Mécanicien automobile':'ميكانيكي سيارات','Carrossier':'ميكانيكي هيكل',
+  'Électricien auto':'كهربائي سيارات','Pneumaticien':'تقني إطارات',
+  'Laveur de voitures':'غاسل سيارات','Coiffeur à domicile':'حلاق منزلي',
+  'Esthéticienne':'خبيرة تجميل','Masseur':'مدلك',
+  'Architecte':'مهندس معماري','Géomètre':'مساح أراضي',
+  'Ingénieur BTP':'مهندس أشغال','Dessinateur bâtiment':'رسام هندسي',
+  'Conducteur de travaux':'مشرف أشغال','Métreur':'مقيس كميات',
+  'Climatisation':'تقني تكييف','Nettoyage':'نظافة',
+  'Déménagement':'نقل عفش','Informatique':'معلوماتية',
+};
+
+// ═══════════════════════════════════════
+//  DONNÉES ADMIN (localStorage)
+// ═══════════════════════════════════════
+const DEFAULT_TEXTES = {
+  landing_title:   'Trouvez votre artisan de confiance',
+  landing_sub:     'Connectez-vous avec les meilleurs artisans du Maroc',
+  search_hero:     'Trouvez votre <em>M3alam</em>',
+  search_sub:      "L'artisan qualifié dont vous avez besoin, près de chez vous",
+  btn_inscription: 'Devenir M3alam',
+  btn_trouver:     'Trouver un artisan',
+};
+const TEXTE_LABELS = {
+  landing_title:'Titre page accueil', landing_sub:'Sous-titre page accueil',
+  search_hero:'Titre recherche (HTML)', search_sub:'Sous-titre recherche',
+  btn_inscription:'Bouton Inscription', btn_trouver:'Bouton Trouver',
+};
+const PUB_SLOT_LABELS = {
+  banner_top:'🔝 Bannière haut (recherche)',
+  banner_mid:'📌 Bannière milieu (résultats)',
+  banner_artisan:'👷 Bannière page artisan',
+};
+
+function loadAdminDB() {
+  return {
+    extraVilles:  JSON.parse(localStorage.getItem('adm_villes')  || '[]'),
+    extraMetiers: JSON.parse(localStorage.getItem('adm_metiers') || '[]'),
+    pubs:         JSON.parse(localStorage.getItem('adm_pubs')    || '[]'),
+    textes:       JSON.parse(localStorage.getItem('adm_textes')  || JSON.stringify(DEFAULT_TEXTES)),
+  };
+}
+function saveAdmKey(key, val) { localStorage.setItem('adm_'+key, JSON.stringify(val)); }
+
+// ─── TEXTES ───────────────────────────────────────────────
+function applyTextes() {
+  const txts = loadAdminDB().textes;
+  const q = (sel, val) => { const el=document.querySelector(sel); if(el&&val) el.innerHTML=val; };
+  q('.search-hero-title', txts.search_hero);
+  q('.search-hero-sub',   txts.search_sub);
+  q('.landing-title',     txts.landing_title);
+  q('.landing-sub',       txts.landing_sub);
+}
+
+// ─── PUBS ────────────────────────────────────────────────
+function renderPubsInApp() {
+  const pubs = loadAdminDB().pubs;
+  ['banner_top','banner_mid'].forEach(slot => {
+    let el = document.getElementById('pub-'+slot);
+    if(!el) {
+      el = document.createElement('div');
+      el.id = 'pub-'+slot;
+      if(slot==='banner_top') {
+        const hero = document.querySelector('.user-search-hero');
+        if(hero) hero.parentNode.insertBefore(el, hero.nextSibling);
+      }
+      if(slot==='banner_mid') {
+        const grid = document.getElementById('artisans-grid');
+        if(grid) grid.parentNode.insertBefore(el, grid);
+      }
+    }
+    el.innerHTML = pubs.filter(p=>p.slot===slot).map(p=>`
+      <div onclick="${p.url?`window.open('${p.url}','_blank')`:''}"
+        style="margin:12px 24px;border-radius:14px;overflow:hidden;cursor:${p.url?'pointer':'default'};
+          background:${p.bg||'#C8845A'};color:${p.color||'#fff'};padding:16px 24px;
+          display:flex;align-items:center;justify-content:space-between;gap:16px;
+          box-shadow:0 4px 20px rgba(0,0,0,0.12)">
+        <div>
+          <div style="font-weight:700;font-size:1rem">${p.title||''}</div>
+          ${p.type!=='image'&&p.content?`<div style="font-size:0.85rem;opacity:0.85;margin-top:4px">${p.content}</div>`:''}
+        </div>
+        ${p.type==='image'&&p.content
+          ?`<img src="${p.content}" style="height:60px;border-radius:8px;object-fit:cover" onerror="this.style.display='none'">`
+          :`<span style="font-size:1.5rem;opacity:0.7">${p.url?'→':''}</span>`}
+      </div>`).join('');
+  });
+}
+
+// ═══════════════════════════════════════
+//  STATISTIQUES ADMIN
+// ═══════════════════════════════════════
+
+// ── Suivi visiteurs ────────────────────
+function trackVisit() {
+  const today = new Date().toISOString().slice(0,10);
+  const visits = JSON.parse(localStorage.getItem('m3alam_visits') || '{}');
+  // Compteur journalier
+  visits[today] = (visits[today] || 0) + 1;
+  localStorage.setItem('m3alam_visits', JSON.stringify(visits));
+
+  // Visiteurs uniques (par session)
+  if (!sessionStorage.getItem('m3alam_visit_counted')) {
+    sessionStorage.setItem('m3alam_visit_counted', '1');
+    const total = parseInt(localStorage.getItem('m3alam_total_visits') || '0') + 1;
+    localStorage.setItem('m3alam_total_visits', String(total));
+  }
+}
+
+function adminResetVisits() {
+  if (!confirm('Réinitialiser tout l\'historique des visites ?')) return;
+  localStorage.removeItem('m3alam_visits');
+  localStorage.removeItem('m3alam_total_visits');
+  renderAdmStats();
+  showToast('🗑️ Historique réinitialisé');
+}
+
+// ── Rendu des stats ────────────────────
+function renderAdmStats() {
+  const artisans = DB.artisans;
+  const users    = JSON.parse(localStorage.getItem('m3alam_users') || '[]');
+  const reviews  = DB.reviews || [];
+  const totalVisits = parseInt(localStorage.getItem('m3alam_total_visits') || '0');
+  const visits    = JSON.parse(localStorage.getItem('m3alam_visits') || '{}');
+  const today     = new Date().toISOString().slice(0,10);
+  const todayVisits = visits[today] || 0;
+
+  // KPI
+  document.getElementById('kpi-visitors-val').textContent   = totalVisits.toLocaleString();
+  document.getElementById('kpi-visitors-today').textContent = todayVisits + ' aujourd\'hui';
+  document.getElementById('kpi-artisans-val').textContent   = artisans.length;
+  document.getElementById('kpi-artisans-verified').textContent = artisans.filter(a=>a.verified).length + ' vérifiés';
+  document.getElementById('kpi-users-val').textContent      = users.length;
+  document.getElementById('kpi-reviews-count').textContent  = reviews.length + ' avis';
+
+  // Note moyenne
+  if (reviews.length) {
+    const avg = (reviews.reduce((s,r)=>s+r.rating,0) / reviews.length).toFixed(1);
+    document.getElementById('kpi-rating-val').textContent = avg;
+    document.getElementById('kpi-rating-sub').textContent = '★'.repeat(Math.round(avg)) + ' / 5';
+  }
+
+  // Chart: artisans par ville
+  const byVille = {};
+  artisans.forEach(a => { if(a.city) byVille[a.city] = (byVille[a.city]||0)+1; });
+  renderBarChart('chart-villes', byVille, 'clay');
+
+  // Chart: artisans par métier
+  const byMetier = {};
+  artisans.forEach(a => { if(a.metier) byMetier[a.metier] = (byMetier[a.metier]||0)+1; });
+  renderBarChart('chart-metiers', byMetier, 'teal', 15);
+
+  // Chart: visites par jour (30 derniers jours)
+  renderVisitsChart('chart-visits', visits);
+}
+
+function renderBarChart(containerId, data, colorVar, limit=20) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const sorted = Object.entries(data).sort((a,b)=>b[1]-a[1]).slice(0, limit);
+  const max = sorted[0]?.[1] || 1;
+
+  if (!sorted.length) {
+    el.innerHTML = '<p style="color:#bbb;text-align:center;padding:20px">Aucune donnée</p>';
+    return;
+  }
+
+  const gradient = colorVar === 'clay'
+    ? 'linear-gradient(90deg,var(--clay),var(--gold))'
+    : 'linear-gradient(90deg,var(--teal),#3DAD9C)';
+
+  el.innerHTML = sorted.map(([label, count]) => {
+    const pct = Math.round((count / max) * 100);
+    return `<div class="stat-bar-row">
+      <div class="stat-bar-label" title="${label}">${label}</div>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar-fill" style="width:${pct}%;background:${gradient}">
+          <span class="stat-bar-count">${count}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderVisitsChart(containerId, visits) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+
+  // Build last 30 days
+  const days = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    days.push({ key, label: d.toLocaleDateString('fr-MA',{day:'numeric',month:'short'}), count: visits[key]||0 });
+  }
+  const max = Math.max(...days.map(d=>d.count), 1);
+  const maxH = 80;
+
+  el.innerHTML = `<div style="display:flex;align-items:flex-end;gap:2px;padding:8px 0;min-width:600px">` +
+    days.map(d => {
+      const h = Math.max(Math.round((d.count/max)*maxH), d.count>0?4:1);
+      return `<div class="visit-bar-col" title="${d.label}: ${d.count} visite(s)">
+        <span style="font-size:0.7rem;color:var(--clay);font-weight:700;margin-bottom:2px">${d.count||''}</span>
+        <div class="visit-bar-inner" style="height:${h}px;opacity:${d.count?1:0.2}"></div>
+        <div class="visit-bar-label">${d.label}</div>
+      </div>`;
+    }).join('') + '</div>';
+}
+
+
+
+function initAdminPage() {
+  const catSel = document.getElementById('adm-metier-cat');
+  if(catSel) {
+    catSel.innerHTML = '<option value="">-- Catégorie --</option>' +
+      Object.keys(METIERS_MAP).map(g=>`<option value="${g}">${g}</option>`).join('');
+  }
+  adminTab('stats');
+}
+
+function adminTab(name) {
+  document.querySelectorAll('.adm-section').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.adm-tab').forEach(t=>t.classList.remove('active'));
+  const sec = document.getElementById('admsec-'+name);
+  const tab = document.getElementById('atab-'+name);
+  if(sec) sec.style.display='block';
+  if(tab) tab.classList.add('active');
+  const fns = {stats:renderAdmStats, villes:renderAdmVilles, metiers:renderAdmMetiers, pubs:renderAdmPubs, textes:renderAdmTextes, artisans:renderAdmArtisans};
+  if(fns[name]) fns[name]();
+}
+
+// ── VILLES ─────────────────
+function getAllVilles() {
+  const adm = loadAdminDB();
+  const base = VILLES_MAROC.map(v=>({fr:v, ar:AR_VILLES[v]||'', base:true}));
+  return [...base, ...adm.extraVilles.map(v=>({...v,base:false}))];
+}
+function renderAdmVilles() {
+  const tbody = document.getElementById('adm-villes-body');
+  if(!tbody) return;
+  tbody.innerHTML = getAllVilles().map((v,i)=>`
+    <tr>
+      <td style="color:#bbb;font-size:0.8rem">${i+1}</td>
+      <td><strong>${v.fr}</strong></td>
+      <td style="direction:rtl;font-family:serif;font-size:1.05rem;color:var(--earth)">${v.ar||'—'}</td>
+      <td>${v.base
+        ?'<span style="font-size:0.75rem;color:#ccc">défaut</span>'
+        :`<button class="adm-btn-sm del" onclick="admDelVille(${i})">🗑️ Supprimer</button>`}
+      </td>
+    </tr>`).join('');
+}
+function adminAddVille() {
+  const fr=document.getElementById('adm-ville-fr').value.trim();
+  const ar=document.getElementById('adm-ville-ar').value.trim();
+  if(!fr){showToast('⚠️ Entrez le nom de la ville');return;}
+  const adm=loadAdminDB();
+  adm.extraVilles.push({fr,ar});
+  saveAdmKey('villes',adm.extraVilles);
+  document.getElementById('adm-ville-fr').value='';
+  document.getElementById('adm-ville-ar').value='';
+  renderAdmVilles(); populateSelects();
+  showToast('✅ Ville ajoutée !');
+}
+function admDelVille(i) {
+  const base = VILLES_MAROC.length;
+  if(i<base){showToast('⚠️ Ville par défaut non supprimable');return;}
+  const adm=loadAdminDB();
+  adm.extraVilles.splice(i-base,1);
+  saveAdmKey('villes',adm.extraVilles);
+  renderAdmVilles(); populateSelects();
+  showToast('🗑️ Ville supprimée');
+}
+
+// ── MÉTIERS ────────────────
+function getAllMetiers() {
+  const adm=loadAdminDB();
+  const base=Object.entries(METIERS_MAP).flatMap(([cat,ms])=>
+    ms.map(m=>({fr:m,ar:AR_METIERS[m]||'',cat,skills:SKILLS_MAP[m]||[],base:true})));
+  return [...base, ...adm.extraMetiers.map(m=>({...m,base:false}))];
+}
+function renderAdmMetiers() {
+  const tbody=document.getElementById('adm-metiers-body');
+  if(!tbody) return;
+  tbody.innerHTML=getAllMetiers().map((m,i)=>`
+    <tr>
+      <td style="font-size:0.78rem;color:var(--clay);white-space:nowrap">${m.cat}</td>
+      <td><strong>${m.fr}</strong></td>
+      <td style="direction:rtl;font-family:serif;font-size:1rem;color:var(--earth)">${m.ar||'—'}</td>
+      <td style="font-size:0.78rem;color:#999;max-width:200px">${(m.skills||[]).slice(0,3).join(', ')}${(m.skills||[]).length>3?'…':''}</td>
+      <td>${m.base
+        ?'<span style="font-size:0.75rem;color:#ccc">défaut</span>'
+        :`<button class="adm-btn-sm del" onclick="admDelMetier(${i})">🗑️</button>`}
+      </td>
+    </tr>`).join('');
+}
+function adminAddMetier() {
+  const fr    =document.getElementById('adm-metier-fr').value.trim();
+  const ar    =document.getElementById('adm-metier-ar').value.trim();
+  const cat   =document.getElementById('adm-metier-cat').value;
+  const skills=document.getElementById('adm-metier-skills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if(!fr||!cat){showToast('⚠️ Entrez le métier et la catégorie');return;}
+  const adm=loadAdminDB();
+  adm.extraMetiers.push({fr,ar,cat,skills});
+  saveAdmKey('metiers',adm.extraMetiers);
+  ['adm-metier-fr','adm-metier-ar','adm-metier-skills'].forEach(id=>document.getElementById(id).value='');
+  renderAdmMetiers(); populateSelects();
+  showToast('✅ Métier ajouté !');
+}
+function admDelMetier(i) {
+  const base=Object.values(METIERS_MAP).flat().length;
+  if(i<base){showToast('⚠️ Métier par défaut non supprimable');return;}
+  const adm=loadAdminDB();
+  adm.extraMetiers.splice(i-base,1);
+  saveAdmKey('metiers',adm.extraMetiers);
+  renderAdmMetiers(); populateSelects();
+  showToast('🗑️ Métier supprimé');
+}
+
+// ── PUBLICITÉS ─────────────
+function renderAdmPubs() {
+  const adm=loadAdminDB();
+  const el=document.getElementById('adm-pubs-list');
+  if(!el) return;
+  if(!adm.pubs.length){el.innerHTML='<p style="color:#bbb;text-align:center;padding:24px">Aucune publicité active</p>';return;}
+  el.innerHTML=adm.pubs.map((p,i)=>`
+    <div class="adm-pub-card">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:48px;height:32px;background:${p.bg||'#C8845A'};border-radius:8px;flex-shrink:0"></div>
+        <div>
+          <div style="font-weight:700;font-size:0.9rem;color:var(--earth)">${p.title||'Sans titre'}</div>
+          <div style="font-size:0.78rem;color:#999">${PUB_SLOT_LABELS[p.slot]||p.slot} · ${p.type}</div>
+          ${p.url?`<div style="font-size:0.75rem;color:var(--clay)">${p.url}</div>`:''}
+        </div>
+      </div>
+      <button class="adm-btn-sm del" onclick="admDelPub(${i})" style="white-space:nowrap">🗑️ Supprimer</button>
+    </div>`).join('');
+}
+function adminAddPub() {
+  const pub={
+    slot:   document.getElementById('adm-pub-slot').value,
+    type:   document.getElementById('adm-pub-type').value,
+    title:  document.getElementById('adm-pub-title').value.trim(),
+    url:    document.getElementById('adm-pub-url').value.trim(),
+    content:document.getElementById('adm-pub-content').value.trim(),
+    bg:     document.getElementById('adm-pub-bg').value,
+    color:  document.getElementById('adm-pub-color').value,
+  };
+  if(!pub.content&&!pub.title){showToast('⚠️ Ajoutez un contenu ou titre');return;}
+  const adm=loadAdminDB();
+  adm.pubs.push(pub);
+  saveAdmKey('pubs',adm.pubs);
+  renderAdmPubs(); renderPubsInApp();
+  showToast('✅ Publicité publiée !');
+}
+function admDelPub(i) {
+  const adm=loadAdminDB();
+  adm.pubs.splice(i,1);
+  saveAdmKey('pubs',adm.pubs);
+  renderAdmPubs(); renderPubsInApp();
+  showToast('🗑️ Publicité supprimée');
+}
+
+// ── TEXTES ─────────────────
+function renderAdmTextes() {
+  const txts=loadAdminDB().textes;
+  const form=document.getElementById('adm-textes-form');
+  if(!form) return;
+  form.innerHTML=Object.entries(TEXTE_LABELS).map(([k,lbl])=>`
+    <div>
+      <label class="adm-lbl">${lbl}</label>
+      <input class="adm-input" id="atxt-${k}" value="${(txts[k]||DEFAULT_TEXTES[k]||'').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}">
+    </div>`).join('');
+}
+function adminSaveTextes() {
+  const adm=loadAdminDB();
+  Object.keys(TEXTE_LABELS).forEach(k=>{
+    const el=document.getElementById('atxt-'+k);
+    if(el) adm.textes[k]=el.value;
+  });
+  saveAdmKey('textes',adm.textes);
+  applyTextes();
+  showToast('✅ Textes mis à jour !');
+}
+
+// ── ARTISANS ADMIN ─────────
+function renderAdmArtisans() {
+  const tbody=document.getElementById('adm-artisans-body');
+  if(!tbody) return;
+  if(!DB.artisans.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#bbb;padding:24px">Aucun artisan inscrit</td></tr>';return;}
+  tbody.innerHTML=DB.artisans.map((a,i)=>`
+    <tr>
+      <td><strong>${a.name}</strong></td>
+      <td>${a.metier||'—'}</td>
+      <td>${a.city||'—'}</td>
+      <td style="font-size:0.8rem;color:#999">${a.email||'—'}</td>
+      <td><span class="adm-badge ${a.verified?'ok':'pending'}">${a.verified?'✅ Vérifié':'⏳ En attente'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="adm-btn-sm verify" onclick="admToggleVerify(${i})">${a.verified?'Retirer':'Vérifier'}</button>
+        <button class="adm-btn-sm del" onclick="admDelArtisan(${i})">🗑️</button>
+      </td>
+    </tr>`).join('');
+}
+function admToggleVerify(i) {
+  DB.artisans[i].verified=!DB.artisans[i].verified;
+  save(); renderAdmArtisans();
+  showToast(DB.artisans[i].verified?'✅ Artisan vérifié':'Vérification retirée');
+}
+function admDelArtisan(i) {
+  if(!confirm('Supprimer '+DB.artisans[i].name+' ?')) return;
+  DB.artisans.splice(i,1); save(); renderAdmArtisans();
+  showToast('🗑️ Artisan supprimé');
+}
+
+
+// ═══════════════════════════════════════
+//  AUTOCOMPLETE ENGINE
+// ═══════════════════════════════════════
+
+// Config par champ : type = 'ville' | 'metier'
+const AC_CONFIG = {
+  'reg-city':      { type:'ville',   placeholder:'Tapez votre ville...' },
+  'pf-city':       { type:'ville',   placeholder:'Tapez votre ville...' },
+  'search-city':   { type:'ville',   placeholder:'Toutes les villes...' },
+  'pf-metier':     { type:'metier',  placeholder:'Tapez votre métier...' },
+  'search-metier': { type:'metier',  placeholder:'Tous les métiers...' },
+};
+
+// Construit la liste plate [{fr, ar}] pour chaque type
+function acGetItems(type) {
+  const adm = loadAdminDB();
+  if (type === 'ville') {
+    const base = VILLES_MAROC.map(v => ({ fr:v, ar: AR_VILLES[v]||'' }));
+    const extra = adm.extraVilles.map(v => ({ fr:v.fr, ar:v.ar||'' }));
+    return [...base, ...extra];
+  } else {
+    const base = Object.values(METIERS_MAP).flat().map(m => ({ fr:m, ar: AR_METIERS[m]||'' }));
+    const extra = adm.extraMetiers.map(m => ({ fr:m.fr, ar:m.ar||'' }));
+    return [...base, ...extra];
+  }
+}
+
+// Highligh la partie correspondante
+function acHighlight(text, query) {
+  if (!query) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return text.slice(0,idx) + '<mark>' + text.slice(idx, idx+query.length) + '</mark>' + text.slice(idx+query.length);
+}
+
+// Rendre le dropdown
+function acRender(id, items, query) {
+  const drop = document.getElementById(id+'-drop');
+  const inp  = document.getElementById(id+'-input');
+  if (!drop || !inp) return;
+
+  // Position fixed sous l'input — échappe à tout overflow:hidden parent
+  const rect = inp.getBoundingClientRect();
+  drop.style.top   = (rect.bottom + 4) + 'px';
+  drop.style.left  = rect.left + 'px';
+  drop.style.width = Math.max(rect.width, 240) + 'px';
+
+  if (!items.length) {
+    drop.innerHTML = '<div class="ac-empty">Aucun résultat</div>';
+  } else {
+    drop.innerHTML = items.slice(0,12).map(item => {
+      const safe = item.fr.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return '<div class="ac-item" onmousedown="acSelect(\'' + id + '\',\'' + safe + '\')">' +
+        '<span>' + acHighlight(item.fr, query) + '</span>' +
+        (item.ar ? '<span class="ac-ar">' + item.ar + '</span>' : '') +
+        '</div>';
+    }).join('');
+  }
+  drop.classList.add('open');
+}
+
+// Filtre au fur et à mesure de la saisie
+function acFilter(id) {
+  const inp = document.getElementById(id+'-input');
+  const hidden = document.getElementById(id);
+  if (!inp) return;
+  const q = inp.value.trim();
+  const cfg = AC_CONFIG[id];
+  if (!cfg) return;
+
+  if (!q) {
+    if (hidden) hidden.value = '';
+    inp.classList.remove('has-value');
+    acRender(id, acGetItems(cfg.type).slice(0, 8), '');
+    return;
+  }
+
+  const items = acGetItems(cfg.type);
+  const q_low = q.toLowerCase();
+  const starts   = items.filter(item => item.fr.toLowerCase().startsWith(q_low) || (item.ar && item.ar.startsWith(q)));
+  const contains = items.filter(item => !item.fr.toLowerCase().startsWith(q_low) && (item.fr.toLowerCase().includes(q_low) || (item.ar && item.ar.includes(q))));
+  acRender(id, [...starts, ...contains], q);
+}
+
+// Ouvrir au focus — afficher les suggestions populaires
+function acOpen(id) {
+  const inp = document.getElementById(id+'-input');
+  if (!inp) return;
+  const q = inp.value.trim();
+  const cfg = AC_CONFIG[id];
+  if (!cfg) return;
+  const items = acGetItems(cfg.type);
+  if (q) {
+    acFilter(id);
+  } else {
+    acRender(id, items.slice(0, 8), '');
+  }
+}
+
+// Fermer le dropdown
+function acClose(id) {
+  const drop = document.getElementById(id+'-drop');
+  if (drop) drop.classList.remove('open');
+}
+
+// onblur — délai pour permettre le clic sur un item
+function acBlur(id) {
+  setTimeout(() => acClose(id), 180);
+}
+
+// Vider un champ autocomplete
+function acClear(id) {
+  const inp = document.getElementById(id+'-input');
+  const hidden = document.getElementById(id);
+  const btn = document.getElementById(id+'-clear');
+  if (inp) { inp.value = ''; inp.classList.remove('has-value'); inp.focus(); }
+  if (hidden) hidden.value = '';
+  if (btn) btn.classList.remove('visible');
+  acClose(id);
+  if (id === 'search-metier' || id === 'search-city') searchArtisans();
+}
+
+// Sélection d'un item
+function acSelect(id, value) {
+  const inp = document.getElementById(id+'-input');
+  const hidden = document.getElementById(id);
+  const btn = document.getElementById(id+'-clear');
+  if (inp) { inp.value = value; inp.classList.add('has-value'); }
+  if (hidden) hidden.value = value;
+  if (btn) btn.classList.add('visible');
+  acClose(id);
+  if (id === 'pf-metier') renderSkills(value, []);
+  if (id === 'search-metier' || id === 'search-city') searchArtisans();
+}
+
+// Pré-remplir un champ depuis le code
+function acSetValue(id, value) {
+  const inp = document.getElementById(id+'-input');
+  const hidden = document.getElementById(id);
+  if (inp) { inp.value = value; if(value) inp.classList.add('has-value'); }
+  if (hidden) hidden.value = value;
+}
+
+// Supprimer populateSelects pour les selects — on n'en a plus besoin
+// mais on garde la fonction pour l'admin (adm-metier-cat)
+function populateSelects() {
+  // Pour l'admin uniquement
+  const catSel = document.getElementById('adm-metier-cat');
+  if (catSel) {
+    const adm = loadAdminDB ? loadAdminDB() : {extraMetiers:[]};
+    catSel.innerHTML = '<option value="">-- Catégorie --</option>' +
+      Object.keys(METIERS_MAP).map(g=>`<option value="${g}">${g}</option>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════
+//  DÉMARRAGE — après toutes les fonctions
+// ═══════════════════════════════════════
+populateSelects();
+applyTextes();
+renderPubsInApp();
+trackVisit();
+if(currentUser){
+  if(currentUser.role==='admin')  { showPage('admin');   initAdminPage(); }
+  else if(currentUser.role==='artisan'){ showPage('artisan'); initArtisanDashboard(); }
+  else { showPage('user'); initUserPage(); }
+}
+
+</script>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();lbNav(-1)">‹</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation();lbNav(1)">›</button>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
+</div>
+
+
+<!-- AUTOCOMPLETE DROPDOWNS (au niveau body pour éviter overflow:hidden) -->
+<div class="ac-dropdown" id="reg-city-drop"></div>
+<div class="ac-dropdown" id="pf-city-drop"></div>
+<div class="ac-dropdown" id="pf-metier-drop"></div>
+<div class="ac-dropdown" id="search-city-drop"></div>
+<div class="ac-dropdown" id="search-metier-drop"></div>
+
+</body>
+</html>
