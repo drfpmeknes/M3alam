@@ -935,7 +935,7 @@ body {
   padding:14px 22px; border-radius:12px;
   font-size:0.9rem; font-weight:500;
   box-shadow:0 8px 28px rgba(0,0,0,0.2);
-  z-index:9999; opacity:0; transform:translateY(10px);
+  z-index:999999; opacity:0; transform:translateY(10px);
   transition:all 0.3s; pointer-events:none;
   display:flex; align-items:center; gap:10px;
 }
@@ -2639,8 +2639,13 @@ async function submitReview(){
 //  UTILS
 // ═══════════════════════════════════════
 function showToast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg;
-  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+  const t=document.getElementById('toast');
+  if (!t) { console.log('TOAST:', msg); return; }
+  t.textContent=msg;
+  t.classList.remove('show');
+  void t.offsetWidth; // force reflow
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
 }
 
 // Close modals on overlay click
