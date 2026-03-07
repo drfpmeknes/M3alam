@@ -848,6 +848,8 @@ body {
   margin-top:10px;
 }
 @media(max-width:480px){
+  .name-fields-grid { grid-template-columns:1fr !important; }
+}
   .detail-photos-row { grid-template-columns:repeat(2,1fr); }
 }
 .dph-thumb {
@@ -1196,7 +1198,7 @@ body {
         </div>
       </div>
       <div class="field-row">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" class="name-fields-grid">
           <div class="field"><label>Prénom</label><input type="text" id="reg-fname" placeholder="Prénom"></div>
           <div class="field"><label>Nom</label><input type="text" id="reg-lname" placeholder="Nom"></div>
         </div>
@@ -3512,8 +3514,4 @@ if(currentUser){
 <div class="ac-dropdown" id="reg-city-drop"></div>
 <div class="ac-dropdown" id="pf-city-drop"></div>
 <div class="ac-dropdown" id="pf-metier-drop"></div>
-<div class="ac-dropdown" id="search-city-drop"></div>
-<div class="ac-dropdown" id="search-metier-drop"></div>
-
-</body>
-</html>
+<div class="ac-dropdown" id="search-ci
