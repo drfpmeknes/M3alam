@@ -966,7 +966,17 @@ body {
   .main-content { padding:24px; }
   .detail-grid { grid-template-columns:1fr; }
 }
-/* ═══ STATS ═══ */
+/* ═══ SOCIAL BUTTONS ═══ */
+.social-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 16px; border-radius:20px; font-size:0.82rem;
+  font-weight:600; text-decoration:none; transition:opacity 0.2s;
+}
+.social-btn:hover { opacity:0.85; }
+.social-btn.whatsapp  { background:#25D366; color:white; }
+.social-btn.instagram { background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color:white; }
+.social-btn.tiktok    { background:#010101; color:white; }
+.social-btn.facebook  { background:#1877F2; color:white; }
 .stats-kpi-card {
   background:white; border-radius:16px; padding:20px 24px;
   box-shadow:0 2px 16px rgba(61,43,31,0.07);
@@ -1311,6 +1321,26 @@ body {
             </div>
           </div>
 
+          <div class="form-section-title">📱 Réseaux sociaux</div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>📸 Instagram</label>
+              <input type="text" id="pf-instagram" placeholder="@votre_compte">
+            </div>
+            <div class="form-field">
+              <label>🎵 TikTok</label>
+              <input type="text" id="pf-tiktok" placeholder="@votre_compte">
+            </div>
+            <div class="form-field">
+              <label>💬 WhatsApp</label>
+              <input type="tel" id="pf-whatsapp" placeholder="+212 6XX XXX XXX">
+            </div>
+            <div class="form-field">
+              <label>📘 Facebook</label>
+              <input type="text" id="pf-facebook" placeholder="facebook.com/votre_page">
+            </div>
+          </div>
+
           <div class="form-section-title">Compétences</div>
           <div class="skills-tags" id="skills-container"></div>
 
@@ -1433,6 +1463,7 @@ body {
         <div>
           <div class="detail-section-title">Informations</div>
           <div class="detail-info-list" id="detail-info-list"></div>
+          <div id="detail-socials" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px"></div>
         </div>
       </div>
 
@@ -2206,8 +2237,12 @@ async function initArtisanDashboard() {
   if(a.name){const p=a.name.split(' ');document.getElementById('pf-fname').value=p[0]||'';document.getElementById('pf-lname').value=p.slice(1).join(' ')||'';}
   document.getElementById('pf-phone').value  = a.phone||'';
   document.getElementById('pf-email').value  = a.email||'';
-  document.getElementById('pf-bio').value    = a.bio||'';
-  document.getElementById('pf-rate').value   = a.rate||'';
+  document.getElementById('pf-bio').value       = a.bio||'';
+  document.getElementById('pf-rate').value      = a.rate||'';
+  document.getElementById('pf-instagram').value = a.instagram||'';
+  document.getElementById('pf-tiktok').value    = a.tiktok||'';
+  document.getElementById('pf-whatsapp').value  = a.whatsapp||'';
+  document.getElementById('pf-facebook').value  = a.facebook||'';
   if(a.metier){acSetValue('pf-metier', a.metier); renderSkills(a.metier,a.skills||[]);}
   if(a.city){acSetValue('pf-city', a.city);}
   if(a.exp){document.getElementById('pf-exp').value=a.exp;}
@@ -2265,14 +2300,18 @@ async function saveProfile() {
   const exp    = document.getElementById('pf-exp').value;
   const city   = acVal('pf-city');
   const rate   = document.getElementById('pf-rate').value;
-  const bio    = document.getElementById('pf-bio').value.trim();
-  const skills = getSelectedSkills();
+  const bio      = document.getElementById('pf-bio').value.trim();
+  const skills   = getSelectedSkills();
+  const instagram= document.getElementById('pf-instagram').value.trim();
+  const tiktok   = document.getElementById('pf-tiktok').value.trim();
+  const whatsapp = document.getElementById('pf-whatsapp').value.trim();
+  const facebook = document.getElementById('pf-facebook').value.trim();
 
   if(!fname||!lname||!metier||!city){ showToast('⚠️ Remplissez les champs obligatoires'); return; }
 
   showToast('⏳ Sauvegarde...');
   const idx = DB.artisans.findIndex(a=>a.id===currentUser.id);
-  const updated = { ...(DB.artisans[idx]||currentUser), name:`${fname} ${lname}`, phone, email, metier, exp, city, rate:+rate, bio, skills };
+  const updated = { ...(DB.artisans[idx]||currentUser), name:`${fname} ${lname}`, phone, email, metier, exp, city, rate:+rate, bio, skills, instagram, tiktok, whatsapp, facebook };
   const ok = await saveArtisan(updated);
   if (!ok) return;
 
@@ -2554,6 +2593,16 @@ function openDetail(id){
     ['🏅','Vérification',a.verified?'Artisan vérifié':'En attente'],
   ].map(([ic,lb,v])=>`<div class="dil-item"><span class="dil-icon">${ic}</span><div><div class="dil-val">${v}</div><div class="dil-lbl">${lb}</div></div></div>`).join('');
 
+  // Réseaux sociaux
+  const socials = [
+    a.whatsapp ? `<a href="https://wa.me/${a.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" class="social-btn whatsapp">💬 WhatsApp</a>` : '',
+    a.instagram ? `<a href="https://instagram.com/${a.instagram.replace('@','')}" target="_blank" class="social-btn instagram">📸 Instagram</a>` : '',
+    a.tiktok ? `<a href="https://tiktok.com/@${a.tiktok.replace('@','')}" target="_blank" class="social-btn tiktok">🎵 TikTok</a>` : '',
+    a.facebook ? `<a href="https://${a.facebook.startsWith('http')?'':'/'}${a.facebook}" target="_blank" class="social-btn facebook">📘 Facebook</a>` : '',
+  ].filter(Boolean).join('');
+  const socialWrap = document.getElementById('detail-socials');
+  if (socialWrap) socialWrap.innerHTML = socials;
+
   // Charger photos réelles depuis IndexedDB
   const detailAvatar = document.getElementById('detail-avatar');
   detailAvatar.style.backgroundImage='';
@@ -2641,11 +2690,10 @@ async function submitReview(){
 function showToast(msg){
   const t=document.getElementById('toast');
   if (!t) { console.log('TOAST:', msg); return; }
-  t.textContent=msg;
-  t.classList.remove('show');
-  void t.offsetWidth; // force reflow
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3200);
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:30px;right:30px;background:#3D2B1F;color:white;padding:14px 22px;border-radius:12px;font-size:0.9rem;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,0.3);z-index:999999;opacity:1;transition:opacity 0.3s;pointer-events:none;display:flex;align-items:center;gap:10px;';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.style.cssText='',300); }, 3200);
 }
 
 // Close modals on overlay click
