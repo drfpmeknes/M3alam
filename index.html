@@ -1057,7 +1057,8 @@ body {
 .ac-input:focus { border-color:var(--clay); box-shadow:0 0 0 3px rgba(200,132,90,0.12); }
 .ac-input.has-value { border-color:var(--teal); }
 .ac-dropdown {
-  position:fixed; z-index:99999;
+  position:absolute; z-index:99999;
+  -webkit-overflow-scrolling:touch;
   background:white; border:1.5px solid var(--clay); border-radius:14px;
   box-shadow:0 12px 40px rgba(61,43,31,0.18); max-height:280px;
   overflow-y:auto; display:none; min-width:220px;
@@ -3354,9 +3355,12 @@ function acRender(id, items, query) {
 
   // Position fixed sous l'input — échappe à tout overflow:hidden parent
   const rect = inp.getBoundingClientRect();
-  drop.style.top   = (rect.bottom + 4) + 'px';
-  drop.style.left  = rect.left + 'px';
+  const scrollY = window.scrollY || window.pageYOffset || 0;
+  drop.style.position = 'absolute';
+  drop.style.top   = (rect.bottom + scrollY + 4) + 'px';
+  drop.style.left  = (rect.left + (window.scrollX||0)) + 'px';
   drop.style.width = Math.max(rect.width, 240) + 'px';
+  drop.style.zIndex = '99999';
 
   if (!items.length) {
     drop.innerHTML = '<div class="ac-empty">Aucun résultat</div>';
@@ -3514,4 +3518,8 @@ if(currentUser){
 <div class="ac-dropdown" id="reg-city-drop"></div>
 <div class="ac-dropdown" id="pf-city-drop"></div>
 <div class="ac-dropdown" id="pf-metier-drop"></div>
-<div class="ac-dropdown" id="search-ci
+<div class="ac-dropdown" id="search-city-drop"></div>
+<div class="ac-dropdown" id="search-metier-drop"></div>
+
+</body>
+</html>
