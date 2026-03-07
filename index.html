@@ -1726,31 +1726,31 @@ class SupaTable {
     }
   }
   then(resolve) { return this._exec('GET').then(resolve); }
-  async upsert(row, opts) {
+  upsert(row, opts) {
     const headers = {...this._headers, 'Prefer': 'resolution=merge-duplicates,return=representation'};
-    const res = await fetch(this._base, { method: 'POST', headers, body: JSON.stringify(row) });
-    const text = await res.text();
-    if (!res.ok) return { data: null, error: text ? JSON.parse(text) : {message: 'HTTP '+res.status} };
-    return { data: text ? JSON.parse(text) : null, error: null };
+    return fetch(this._base, { method: 'POST', headers, body: JSON.stringify(row) })
+      .then(r => r.text().then(t => r.ok ? {data:t?JSON.parse(t):null,error:null} : {data:null,error:t?JSON.parse(t):{message:'HTTP '+r.status}}));
   }
-  async insert(row) {
-    const res = await fetch(this._base, { method: 'POST', headers: this._headers, body: JSON.stringify(row) });
-    const text = await res.text();
-    if (!res.ok) return { data: null, error: text ? JSON.parse(text) : {message: 'HTTP '+res.status} };
-    return { data: text ? JSON.parse(text) : null, error: null };
+  insert(row) {
+    return fetch(this._base, { method: 'POST', headers: this._headers, body: JSON.stringify(row) })
+      .then(r => r.text().then(t => r.ok ? {data:t?JSON.parse(t):null,error:null} : {data:null,error:t?JSON.parse(t):{message:'HTTP '+r.status}}));
   }
-  async update(row) {
-    const url = this._buildUrl();
-    const res = await fetch(url, { method: 'PATCH', headers: this._headers, body: JSON.stringify(row) });
-    const text = await res.text();
-    if (!res.ok) return { data: null, error: text ? JSON.parse(text) : {message: 'HTTP '+res.status} };
-    return { data: text ? JSON.parse(text) : null, error: null };
-  }
-  async delete() {
-    const url = this._buildUrl();
-    const res = await fetch(url, { method: 'DELETE', headers: this._headers });
-    if (!res.ok) return { error: {message: 'HTTP '+res.status} };
-    return { error: null };
+  update(row) { this._updateRow = row; return this; }
+  delete() { this._del = true; return this; }
+  then(resolve, reject) {
+    let p;
+    if (this._updateRow !== undefined) {
+      const url = this._buildUrl();
+      p = fetch(url, { method: 'PATCH', headers: this._headers, body: JSON.stringify(this._updateRow) })
+        .then(r => r.text().then(t => r.ok ? {data:t?JSON.parse(t):null,error:null} : {data:null,error:t?JSON.parse(t):{message:'HTTP '+r.status}}));
+    } else if (this._del) {
+      const url = this._buildUrl();
+      p = fetch(url, { method: 'DELETE', headers: this._headers })
+        .then(r => r.ok ? {error:null} : {error:{message:'HTTP '+r.status}});
+    } else {
+      p = this._exec('GET');
+    }
+    return p.then(resolve, reject);
   }
 }
 
