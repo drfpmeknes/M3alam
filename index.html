@@ -2780,15 +2780,50 @@ const PUB_SLOT_LABELS = {
   banner_artisan:'👷 Bannière page artisan',
 };
 
+// Cache local pour les données admin
+let _admCache = null;
+
 function loadAdminDB() {
-  return {
+  if (_admCache) return _admCache;
+  _admCache = {
     extraVilles:  JSON.parse(localStorage.getItem('adm_villes')  || '[]'),
     extraMetiers: JSON.parse(localStorage.getItem('adm_metiers') || '[]'),
     pubs:         JSON.parse(localStorage.getItem('adm_pubs')    || '[]'),
     textes:       JSON.parse(localStorage.getItem('adm_textes')  || JSON.stringify(DEFAULT_TEXTES)),
   };
+  return _admCache;
 }
-function saveAdmKey(key, val) { localStorage.setItem('adm_'+key, JSON.stringify(val)); }
+
+function saveAdmKey(key, val) {
+  localStorage.setItem('adm_'+key, JSON.stringify(val));
+  if (_admCache) _admCache[key === 'villes' ? 'extraVilles' : key === 'metiers' ? 'extraMetiers' : key] = val;
+  // Sauvegarder aussi dans Supabase
+  supa.from('settings').upsert({id: 'adm_'+key, value: JSON.stringify(val)}).then(({error}) => {
+    if (error) console.warn('Settings save error:', error.message);
+  });
+}
+
+async function loadAdminDBFromSupabase() {
+  try {
+    const {data} = await supa.from('settings').select('*');
+    if (data && data.length > 0) {
+      const map = {};
+      data.forEach(row => { map[row.id] = JSON.parse(row.value); });
+      _admCache = {
+        extraVilles:  map['adm_villes']   || [],
+        extraMetiers: map['adm_metiers']  || [],
+        pubs:         map['adm_pubs']     || [],
+        textes:       map['adm_textes']   || DEFAULT_TEXTES,
+      };
+      // Sync to localStorage as backup
+      if (map['adm_villes'])   localStorage.setItem('adm_villes',   JSON.stringify(map['adm_villes']));
+      if (map['adm_metiers'])  localStorage.setItem('adm_metiers',  JSON.stringify(map['adm_metiers']));
+      if (map['adm_pubs'])     localStorage.setItem('adm_pubs',     JSON.stringify(map['adm_pubs']));
+      if (map['adm_textes'])   localStorage.setItem('adm_textes',   JSON.stringify(map['adm_textes']));
+    }
+  } catch(e) { console.warn('loadAdminDBFromSupabase:', e); }
+  return loadAdminDB();
+}
 
 // ─── TEXTES ───────────────────────────────────────────────
 function applyTextes() {
@@ -3087,21 +3122,23 @@ function renderAdmPubs() {
     </div>`).join('');
 }
 function adminAddPub() {
-  const pub={
-    slot:   document.getElementById('adm-pub-slot').value,
-    type:   document.getElementById('adm-pub-type').value,
-    title:  document.getElementById('adm-pub-title').value.trim(),
-    url:    document.getElementById('adm-pub-url').value.trim(),
-    content:document.getElementById('adm-pub-content').value.trim(),
-    bg:     document.getElementById('adm-pub-bg').value,
-    color:  document.getElementById('adm-pub-color').value,
-  };
-  if(!pub.content&&!pub.title){showToast('⚠️ Ajoutez un contenu ou titre');return;}
-  const adm=loadAdminDB();
-  adm.pubs.push(pub);
-  saveAdmKey('pubs',adm.pubs);
-  renderAdmPubs(); renderPubsInApp();
-  showToast('✅ Publicité publiée !');
+  try {
+    const pub={
+      slot:   document.getElementById('adm-pub-slot').value,
+      type:   document.getElementById('adm-pub-type').value,
+      title:  document.getElementById('adm-pub-title').value.trim(),
+      url:    document.getElementById('adm-pub-url').value.trim(),
+      content:document.getElementById('adm-pub-content').value.trim(),
+      bg:     document.getElementById('adm-pub-bg').value,
+      color:  document.getElementById('adm-pub-color').value,
+    };
+    if(!pub.content&&!pub.title){showToast('⚠️ Ajoutez un contenu ou titre');return;}
+    const adm=loadAdminDB();
+    adm.pubs.push(pub);
+    saveAdmKey('pubs',adm.pubs);
+    renderAdmPubs();
+    showToast('✅ Publicité publiée !');
+  } catch(e) { showToast('⚠️ Erreur: '+e.message); console.error(e); }
 }
 function admDelPub(i) {
   const adm=loadAdminDB();
@@ -3123,14 +3160,16 @@ function renderAdmTextes() {
     </div>`).join('');
 }
 function adminSaveTextes() {
-  const adm=loadAdminDB();
-  Object.keys(TEXTE_LABELS).forEach(k=>{
-    const el=document.getElementById('atxt-'+k);
-    if(el) adm.textes[k]=el.value;
-  });
-  saveAdmKey('textes',adm.textes);
-  applyTextes();
-  showToast('✅ Textes mis à jour !');
+  try {
+    const adm=loadAdminDB();
+    Object.keys(TEXTE_LABELS).forEach(k=>{
+      const el=document.getElementById('atxt-'+k);
+      if(el) adm.textes[k]=el.value;
+    });
+    saveAdmKey('textes',adm.textes);
+    applyTextes();
+    showToast('✅ Textes mis à jour !');
+  } catch(e) { showToast('⚠️ Erreur: '+e.message); console.error(e); }
 }
 
 // ── ARTISANS ADMIN ─────────
@@ -3324,8 +3363,12 @@ function populateSelects() {
 //  DÉMARRAGE — après toutes les fonctions
 // ═══════════════════════════════════════
 populateSelects();
-applyTextes();
-renderPubsInApp();
+// Charger les paramètres admin depuis Supabase au démarrage
+(async () => {
+  await loadAdminDBFromSupabase();
+  applyTextes();
+  renderPubsInApp();
+})();
 trackVisit();
 
 // Test connexion Supabase au démarrage
